@@ -1,0 +1,230 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@layer base {
+    body {
+        color-scheme: light;
+        background: #f6f8fa;
+    }
+}
+
+@layer components {
+    .github-theme :is(.bg-white, .bg-white\/88, .bg-white\/90, .bg-white\/95) {
+        background-color: #ffffff;
+        color: #24292f;
+    }
+
+    .github-theme :is(.bg-slate-50, .bg-slate-100) {
+        background-color: #f6f8fa;
+        color: #57606a;
+    }
+
+    .github-theme :is(.border-slate-200, .border-slate-100, .ring-slate-100, .ring-slate-200) {
+        border-color: #d0d7de;
+        --tw-ring-color: rgb(208 215 222 / 0.55);
+    }
+
+    .github-theme :is(.text-slate-900, .text-slate-800, .text-slate-700) {
+        color: #24292f;
+    }
+
+    .github-theme :is(.text-slate-600, .text-slate-500, .text-slate-400) {
+        color: #57606a;
+    }
+
+    .github-theme :is(input, select, textarea) {
+        background-color: #ffffff;
+        border-color: #d0d7de;
+        color: #24292f;
+    }
+
+    .github-theme :is(input:focus, select:focus, textarea:focus) {
+        border-color: #0969da;
+        --tw-ring-color: rgb(9 105 218 / 0.16);
+    }
+
+    .github-theme :is(input::placeholder, textarea::placeholder) {
+        color: #8c959f;
+    }
+
+    .github-theme :is(thead.bg-slate-50) {
+        background-color: #f6f8fa;
+    }
+
+    .github-theme :is(.text-\[\#0b2f57\]) {
+        color: #0969da;
+    }
+
+    .github-theme :is(.bg-\[\#0b2f57\]) {
+        background-color: #0969da;
+        background-image: none;
+        color: #ffffff;
+    }
+
+    .github-theme :is(.bg-\[\#DFD0B8\]) {
+        background-color: #0969da;
+        color: #ffffff;
+    }
+
+    .github-theme :is(.hover\:bg-\[\#cfc0a9\]:hover) {
+        background-color: #0757b8;
+    }
+
+    .github-theme :is(.bg-sky-50) {
+        background-color: #ddf4ff;
+    }
+
+    .github-theme :is(.bg-emerald-50) {
+        background-color: #dafbe1;
+    }
+
+    .github-theme :is(.text-emerald-700) {
+        color: #1f883d;
+    }
+
+    .github-theme :is(.text-sky-700) {
+        color: #0969da;
+    }
+
+    .github-theme :is(.bg-emerald-700, .bg-teal-700) {
+        background-color: #1f883d;
+        color: #ffffff;
+    }
+
+    .github-theme :is(.bg-red-600) {
+        background-color: #cf222e;
+        color: #ffffff;
+    }
+
+    .github-theme :is(.bg-amber-50) {
+        background-color: #fff8c5;
+        color: #9a6700;
+    }
+
+    .github-theme :is(.rounded-3xl, .rounded-2xl, .rounded-xl, .rounded-\[2rem\], .rounded-\[1\.75rem\], .rounded-\[1\.5rem\]) {
+        border-radius: 0.75rem;
+    }
+
+    .github-theme :is(.shadow-xl, .shadow-2xl) {
+        box-shadow: 0 1px 2px rgb(31 35 40 / 0.04);
+    }
+
+    .github-theme table tbody tr {
+        transition: background-color 140ms ease;
+    }
+
+    html.dark body.github-theme,
+    html.dark .github-theme {
+        background-color: #0d1117 !important;
+        color: #e6edf3 !important;
+    }
+
+    html.dark .github-theme > div {
+        background: #0d1117 !important;
+    }
+
+    html.dark .github-theme :is(.bg-white, .bg-white\/88, .bg-white\/90, .bg-white\/95) {
+        background-color: #161b22 !important;
+        color: #e6edf3 !important;
+    }
+
+    html.dark .github-theme :is(.bg-slate-50, .bg-slate-100) {
+        background-color: #0d1117 !important;
+        color: #8b949e !important;
+    }
+
+    html.dark .github-theme :is(.border-slate-200, .border-slate-100, .ring-slate-100, .ring-slate-200) {
+        border-color: #30363d !important;
+        --tw-ring-color: rgb(48 54 61 / 0.7) !important;
+    }
+
+    html.dark .github-theme :is(.text-slate-900, .text-slate-800, .text-slate-700, .text-\[\#24292f\]) {
+        color: #e6edf3 !important;
+    }
+
+    html.dark .github-theme :is(.text-slate-600, .text-slate-500, .text-slate-400, .text-\[\#57606a\]) {
+        color: #8b949e !important;
+    }
+
+    html.dark .github-theme :is(input, select, textarea) {
+        background-color: #0d1117 !important;
+        border-color: #30363d !important;
+        color: #e6edf3 !important;
+    }
+
+    html.dark .github-theme :is(input::placeholder, textarea::placeholder) {
+        color: #6e7681 !important;
+    }
+
+    html.dark .github-theme :is(thead.bg-slate-50) {
+        background-color: #161b22 !important;
+    }
+
+    html.dark .github-theme :is(.bg-\[\#f6f8fa\]) {
+        background-color: #21262d !important;
+    }
+
+    html.dark .github-theme :is(.border-\[\#d0d7de\]) {
+        border-color: #30363d !important;
+    }
+
+    html.dark .github-theme :is(.text-\[\#0b2f57\]) {
+        color: #58a6ff !important;
+    }
+
+    html.dark .github-theme :is(.bg-\[\#0b2f57\], .bg-\[\#0969da\]) {
+        background-color: #238636 !important;
+        color: #ffffff !important;
+    }
+
+    html.dark .github-theme :is(.hover\:bg-\[\#0757b8\]:hover) {
+        background-color: #2ea043 !important;
+    }
+
+    html.dark .github-theme :is(.bg-sky-50) {
+        background-color: rgb(56 139 253 / 0.15) !important;
+    }
+
+    html.dark .github-theme :is(.bg-emerald-50) {
+        background-color: rgb(46 160 67 / 0.16) !important;
+    }
+
+    html.dark .github-theme :is(.bg-amber-50) {
+        background-color: rgb(187 128 9 / 0.16) !important;
+        color: #d29922 !important;
+    }
+
+    html.dark .github-theme :is(.bg-red-600) {
+        background-color: #da3633 !important;
+        color: #ffffff !important;
+    }
+
+    html.dark .github-theme :is(header, aside) {
+        background-color: #161b22 !important;
+        border-color: #30363d !important;
+        color: #e6edf3 !important;
+    }
+
+    html.dark .github-theme .theme-toggle {
+        background-color: #21262d !important;
+        border-color: #30363d !important;
+        color: #e6edf3 !important;
+    }
+
+    html.dark .github-theme .theme-toggle:hover {
+        background-color: #30363d !important;
+    }
+
+    html.dark .github-theme :is(.text-\[\#0969da\]) {
+        color: #58a6ff !important;
+    }
+}
