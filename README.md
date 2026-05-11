@@ -201,3 +201,9 @@ Panduan gratis dengan Render/Oracle Cloud + Supabase tersedia di:
 ```text
 docs/deployment-free.md
 ```
+
+Panduan deployment Vercel + Neon/Vercel Postgres tersedia di:
+
+```text
+docs/deployment-vercel.md
+```

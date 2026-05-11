@@ -3,6 +3,7 @@
 .env
 .env.backup
 .env.production
+.env.vercel
 .phpactor.json
 .phpunit.result.cache
 /.codex
@@ -12,6 +13,7 @@
 /.phpunit.cache
 /.vscode
 /.zed
+/.vercel
 /auth.json
 /node_modules
 /public/build
