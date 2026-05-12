@@ -6,16 +6,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', config('app.name', 'Form CBT'))</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script>
-        (() => {
-            const theme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-            if (theme === 'dark' || (!theme && prefersDark)) {
-                document.documentElement.classList.add('dark');
-            }
-        })();
-    </script>
     @stack('head')
 </head>
 <body class="github-theme min-h-screen bg-[#f6f8fa] text-[#24292f] antialiased">
@@ -34,11 +24,6 @@
                 ])
             : [];
     @endphp
-
-    <button class="theme-toggle fixed right-4 top-4 z-50 inline-flex size-10 items-center justify-center rounded-md border border-[#d0d7de] bg-white text-[#24292f] hover:bg-[#f6f8fa]" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
-        <x-icon name="moon" class="theme-toggle-icon-moon size-4" />
-        <x-icon name="sun" class="theme-toggle-icon-sun hidden size-4" />
-    </button>
 
     <div class="min-h-screen bg-[#f6f8fa] lg:flex">
         @if ($isAdmin)
@@ -128,32 +113,5 @@
     </div>
 
     @stack('scripts')
-    <script>
-        (() => {
-            const buttons = document.querySelectorAll('.theme-toggle');
-            const moonIcons = document.querySelectorAll('.theme-toggle-icon-moon');
-            const sunIcons = document.querySelectorAll('.theme-toggle-icon-sun');
-
-            const refresh = () => {
-                const dark = document.documentElement.classList.contains('dark');
-                moonIcons.forEach((icon) => icon.classList.toggle('hidden', dark));
-                sunIcons.forEach((icon) => icon.classList.toggle('hidden', !dark));
-                buttons.forEach((button) => {
-                    button.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
-                    button.setAttribute('title', dark ? 'Light mode' : 'Dark mode');
-                });
-            };
-
-            buttons.forEach((button) => {
-                button.addEventListener('click', () => {
-                    const dark = document.documentElement.classList.toggle('dark');
-                    localStorage.setItem('theme', dark ? 'dark' : 'light');
-                    refresh();
-                });
-            });
-
-            refresh();
-        })();
-    </script>
 </body>
 </html>

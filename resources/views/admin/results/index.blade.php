@@ -55,6 +55,16 @@
                 <h2 class="text-xl font-bold tracking-tight text-[#0b2f57]">
                     {{ $selectedExam ? $selectedExam->title : 'Belum ada ujian' }}
                 </h2>
+                @if ($selectedExam)
+                    <div class="mt-3 flex flex-wrap gap-2 text-sm">
+                        <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-semibold text-slate-700">
+                            Mapel: {{ $selectedExam->subject }}
+                        </span>
+                        <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-semibold text-slate-700">
+                            Kelas: {{ $selectedExam->getAttribute('class') }}
+                        </span>
+                    </div>
+                @endif
             </div>
             @if ($selectedExam)
                 <div class="flex flex-wrap items-center gap-2">
@@ -74,13 +84,9 @@
             <table class="w-full whitespace-nowrap text-left text-sm">
                 <thead class="bg-slate-50 text-xs font-bold uppercase tracking-wide text-slate-500">
                     <tr>
-                        <th class="px-6 py-4">Siswa</th>
-                        <th class="px-6 py-4">Identifier</th>
+                        <th class="px-6 py-4">Nama</th>
                         <th class="px-6 py-4">Kelas</th>
                         <th class="px-6 py-4">Nilai</th>
-                        <th class="px-6 py-4">Persen</th>
-                        <th class="px-6 py-4">Submit</th>
-                        <th class="px-6 py-4">Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -88,9 +94,7 @@
                         <tr class="hover:bg-slate-50">
                             <td class="px-6 py-4">
                                 <p class="font-bold text-slate-900">{{ $result->user?->name ?? $result->student_name ?? '-' }}</p>
-                                <p class="mt-1 text-xs text-slate-500">{{ $result->nis ?: $result->user?->nis }}</p>
                             </td>
-                            <td class="px-6 py-4 text-slate-600">{{ $result->identifier ?? '-' }}</td>
                             <td class="px-6 py-4 text-slate-600">{{ $result->class ?: $result->user?->getAttribute('class') }}</td>
                             <td class="px-6 py-4 font-bold text-slate-900">
                                 {{ $result->score ?? '-' }}
@@ -98,19 +102,10 @@
                                     / {{ $result->max_score }}
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-slate-600">{{ $result->percentage ? $result->percentage.'%' : '-' }}</td>
-                            <td class="px-6 py-4 text-slate-600">{{ $result->submitted_at?->format('d M Y H:i') ?? '-' }}</td>
-                            <td class="px-6 py-4">
-                                @if ($result->user)
-                                    <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">Cocok</span>
-                                @else
-                                    <span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">Belum cocok</span>
-                                @endif
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td class="px-6 py-8 text-center text-slate-500" colspan="7">
+                            <td class="px-6 py-8 text-center text-slate-500" colspan="3">
                                 Belum ada hasil yang disinkronkan untuk ujian ini.
                             </td>
                         </tr>

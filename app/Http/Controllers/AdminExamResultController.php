@@ -97,23 +97,17 @@ class AdminExamResultController extends Controller
 
             fwrite($handle, "\xEF\xBB\xBF");
 
+            fputcsv($handle, ['Ujian', $exam->title]);
+            fputcsv($handle, ['Mata Pelajaran', $exam->subject]);
+            fputcsv($handle, ['Kelas Ujian', $exam->getAttribute('class')]);
+            fputcsv($handle, ['Tanggal Download', now()->format('Y-m-d H:i:s')]);
+            fputcsv($handle, []);
+
             fputcsv($handle, [
                 'No',
-                'Ujian',
-                'Mapel',
-                'Kelas Ujian',
                 'Nama',
-                'NIS',
-                'Username',
-                'Email',
-                'Identifier',
-                'Kelas Siswa',
+                'Kelas',
                 'Nilai',
-                'Nilai Maksimal',
-                'Persentase',
-                'Waktu Submit',
-                'Status Cocok',
-                'Waktu Sinkron',
             ]);
 
             ExamResult::query()
@@ -127,21 +121,9 @@ class AdminExamResultController extends Controller
                     foreach ($results as $result) {
                         fputcsv($handle, [
                             $number++,
-                            $exam->title,
-                            $exam->subject,
-                            $exam->getAttribute('class'),
                             $result->user?->name ?? $result->student_name ?? '',
-                            $result->nis ?: $result->user?->nis,
-                            $result->user?->username,
-                            $result->user?->email,
-                            $result->identifier,
                             $result->class ?: $result->user?->getAttribute('class'),
-                            $result->score,
-                            $result->max_score,
-                            filled($result->percentage) ? $result->percentage.'%' : '',
-                            $result->submitted_at?->format('Y-m-d H:i:s'),
-                            $result->user ? 'Cocok' : 'Belum cocok',
-                            $result->imported_at?->format('Y-m-d H:i:s'),
+                            filled($result->max_score) ? $result->score.' / '.$result->max_score : $result->score,
                         ]);
                     }
                 });
