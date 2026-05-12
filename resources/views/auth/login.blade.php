@@ -26,7 +26,7 @@
             @csrf
 
             <div class="mx-auto flex size-20 items-center justify-center rounded-xl border border-[#d0d7de] bg-[#f6f8fa] p-2">
-                <img class="size-full object-contain" src="https://i.ibb.co.com/XrdypXkw/log-smp3.jpg" alt="Logo Sekolah" referrerpolicy="no-referrer">
+                <img class="size-full object-contain" src="https://i.ibb.co.com/CKDDdxHY/Chat-GPT-Image-12-Mei-2026-22-09-47.png" alt="Logo Sekolah" referrerpolicy="no-referrer">
             </div>
 
             <h1 class="mt-4 text-xl font-semibold tracking-tight text-[#24292f]">CBT</h1>
