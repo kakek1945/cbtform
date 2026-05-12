@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Exam;
+use App\Models\ExamResult;
 use App\Models\ExamSession;
+use App\Services\ExamResultSyncer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class ExamSessionController extends Controller
@@ -93,6 +96,40 @@ class ExamSessionController extends Controller
         return response()->json(['count' => $session->refresh()->tab_switch_count]);
     }
 
+    public function submissionStatus(Request $request, ExamSession $session, ExamResultSyncer $syncer): JsonResponse
+    {
+        abort_unless($session->user_id === $request->user()->id, 403);
+
+        $session->load('exam');
+        $submitted = $this->hasSubmittedResult($session);
+
+        if (! $submitted && filled($session->exam?->result_spreadsheet_id)) {
+            $cacheKey = 'exam-result-auto-sync:'.$session->exam_id;
+
+            if (Cache::add($cacheKey, true, now()->addSeconds(15))) {
+                try {
+                    $syncer->sync($session->exam);
+                } catch (\Throwable) {
+                    // The exam page should stay usable even if Google Sheets is temporarily unreachable.
+                }
+            }
+
+            $submitted = $this->hasSubmittedResult($session);
+        }
+
+        if ($submitted && ! $session->isFinished()) {
+            $session->markFinished('selesai');
+            ActivityLog::record('exam_form_submitted', 'Jawaban Google Form terdeteksi oleh sistem.', session: $session, request: $request);
+        }
+
+        return response()->json([
+            'submitted' => $submitted,
+            'message' => $submitted ? 'Jawaban sudah terkirim.' : null,
+            'login_url' => route('login'),
+            'logout_url' => route('logout'),
+        ]);
+    }
+
     public function fullscreenExit(Request $request, ExamSession $session): JsonResponse
     {
         abort_unless($session->user_id === $request->user()->id, 403);
@@ -126,5 +163,13 @@ class ExamSessionController extends Controller
 
         return redirect()->route('exam.session.finished', $session)
             ->with('status', 'Waktu ujian habis. Ujian otomatis diselesaikan.');
+    }
+
+    private function hasSubmittedResult(ExamSession $session): bool
+    {
+        return ExamResult::query()
+            ->where('exam_id', $session->exam_id)
+            ->where('user_id', $session->user_id)
+            ->exists();
     }
 }

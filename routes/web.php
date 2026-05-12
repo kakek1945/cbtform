@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/exam/{exam}/start', [ExamSessionController::class, 'start'])->name('exam.start');
         Route::get('/exam/{exam}/session/{session}', [ExamSessionController::class, 'show'])->name('exam.session.show');
         Route::post('/exam/session/{session}/finish', [ExamSessionController::class, 'finish'])->name('exam.session.finish');
+        Route::get('/exam/session/{session}/submission-status', [ExamSessionController::class, 'submissionStatus'])->name('exam.session.submission-status');
         Route::post('/exam/session/{session}/tab-switch', [ExamSessionController::class, 'tabSwitch'])->name('exam.session.tab-switch');
         Route::post('/exam/session/{session}/fullscreen-exit', [ExamSessionController::class, 'fullscreenExit'])->name('exam.session.fullscreen-exit');
         Route::get('/exam/session/{session}/finished', [ExamSessionController::class, 'finished'])->name('exam.session.finished');

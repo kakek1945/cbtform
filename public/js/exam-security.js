@@ -2,6 +2,8 @@
     const timer = document.getElementById('exam-timer');
     const warning = document.getElementById('exam-warning');
     const formWrapper = document.getElementById('form-wrapper');
+    const submissionModal = document.getElementById('submission-modal');
+    const returnLoginButton = document.getElementById('return-login-button');
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
 
     if (!timer || !csrf || !window.examSecurity) {
@@ -10,6 +12,8 @@
 
     const expiresAt = new Date(timer.dataset.expiresAt).getTime();
     let finished = false;
+    let statusInterval = null;
+    let timerInterval = null;
 
     function showWarning(message) {
         if (!warning) {
@@ -39,6 +43,20 @@
         });
     }
 
+    async function getJson(url) {
+        const response = await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Request gagal.');
+        }
+
+        return response.json();
+    }
+
     async function finishByTimeout() {
         if (finished) {
             return;
@@ -56,6 +74,43 @@
             window.location.href = payload.redirect || timer.dataset.finishedUrl;
         } catch (error) {
             window.location.href = timer.dataset.finishedUrl;
+        }
+    }
+
+    function showSubmittedModal(message) {
+        if (finished) {
+            return;
+        }
+
+        finished = true;
+        window.clearInterval(statusInterval);
+        window.clearInterval(timerInterval);
+
+        if (formWrapper) {
+            formWrapper.classList.add('hidden');
+        }
+
+        showWarning(message || 'Jawaban sudah terkirim. Silakan kembali ke halaman login.');
+
+        if (submissionModal) {
+            submissionModal.classList.remove('hidden');
+            submissionModal.classList.add('flex');
+        }
+    }
+
+    async function checkSubmissionStatus() {
+        if (finished || !timer.dataset.submissionStatusUrl) {
+            return;
+        }
+
+        try {
+            const payload = await getJson(timer.dataset.submissionStatusUrl);
+
+            if (payload.submitted) {
+                showSubmittedModal(payload.message);
+            }
+        } catch (error) {
+            // Keep the student focused on the form if status polling is temporarily unavailable.
         }
     }
 
@@ -89,6 +144,19 @@
         }
     });
 
+    returnLoginButton?.addEventListener('click', async () => {
+        returnLoginButton.disabled = true;
+        returnLoginButton.textContent = 'Mengalihkan...';
+
+        try {
+            await post(timer.dataset.logoutUrl);
+        } finally {
+            window.location.href = timer.dataset.loginUrl;
+        }
+    });
+
     tick();
-    window.setInterval(tick, 1000);
+    timerInterval = window.setInterval(tick, 1000);
+    window.setTimeout(checkSubmissionStatus, 5000);
+    statusInterval = window.setInterval(checkSubmissionStatus, 10000);
 })();
