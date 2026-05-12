@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/results', [AdminExamResultController::class, 'index'])->name('results.index');
         Route::post('/results/sync', [AdminExamResultController::class, 'sync'])->name('results.sync');
         Route::get('/results/download', [AdminExamResultController::class, 'download'])->name('results.download');
+        Route::delete('/results/{result}', [AdminExamResultController::class, 'destroy'])->name('results.destroy');
         Route::get('/activity-logs', ActivityLogController::class)->name('activity-logs.index');
     });
 });

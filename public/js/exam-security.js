@@ -2,7 +2,6 @@
     const timer = document.getElementById('exam-timer');
     const warning = document.getElementById('exam-warning');
     const formWrapper = document.getElementById('form-wrapper');
-    const fullscreenButton = document.getElementById('fullscreen-button');
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
 
     if (!timer || !csrf || !window.examSecurity) {
@@ -76,17 +75,6 @@
             post(window.examSecurity.tabSwitchUrl);
             showWarning('Peringatan: aktivitas pindah tab tercatat oleh sistem.');
         }
-    });
-
-    document.addEventListener('fullscreenchange', () => {
-        if (!document.fullscreenElement && !finished) {
-            post(window.examSecurity.fullscreenExitUrl);
-            showWarning('Peringatan: keluar fullscreen tercatat oleh sistem.');
-        }
-    });
-
-    fullscreenButton?.addEventListener('click', () => {
-        document.documentElement.requestFullscreen?.();
     });
 
     document.addEventListener('contextmenu', (event) => event.preventDefault());

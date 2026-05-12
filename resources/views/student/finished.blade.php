@@ -42,7 +42,6 @@
                 <div class="flex justify-between gap-4 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-100"><dt class="text-slate-500">Selesai</dt><dd class="font-bold">{{ $session->finished_at?->format('d M Y H:i') }}</dd></div>
                 <div class="flex justify-between gap-4 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-100"><dt class="text-slate-500">Status</dt><dd class="font-bold">{{ str_replace('_', ' ', $session->status) }}</dd></div>
                 <div class="flex justify-between gap-4 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-100"><dt class="text-slate-500">Pindah Tab</dt><dd class="font-bold">{{ $session->tab_switch_count }}</dd></div>
-                <div class="flex justify-between gap-4 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-100"><dt class="text-slate-500">Keluar Fullscreen</dt><dd class="font-bold">{{ $session->fullscreen_exit_count }}</dd></div>
             </dl>
         </div>
     </section>

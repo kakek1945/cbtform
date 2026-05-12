@@ -87,6 +87,7 @@
                         <th class="px-6 py-4">Nama</th>
                         <th class="px-6 py-4">Kelas</th>
                         <th class="px-6 py-4">Nilai</th>
+                        <th class="px-6 py-4 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -102,10 +103,24 @@
                                     / {{ $result->max_score }}
                                 @endif
                             </td>
+                            <td class="px-6 py-4 text-right">
+                                @if (! $result->user_id)
+                                    <form method="POST" action="{{ route('admin.results.destroy', $result) }}" onsubmit="return confirm('Hapus nilai yang belum cocok ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="inline-flex items-center justify-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-100" type="submit">
+                                            <x-icon name="trash" class="size-4" />
+                                            Hapus
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-xs font-semibold text-slate-400">Cocok</span>
+                                @endif
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td class="px-6 py-8 text-center text-slate-500" colspan="3">
+                            <td class="px-6 py-8 text-center text-slate-500" colspan="4">
                                 Belum ada hasil yang disinkronkan untuk ujian ini.
                             </td>
                         </tr>

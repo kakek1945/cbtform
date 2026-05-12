@@ -134,6 +134,26 @@ class AdminExamResultController extends Controller
         ]);
     }
 
+    public function destroy(ExamResult $result): RedirectResponse
+    {
+        if ($result->user_id !== null) {
+            return back()->withErrors([
+                'result' => 'Hanya hasil yang belum cocok dengan data siswa yang dapat dihapus.',
+            ]);
+        }
+
+        $exam = $result->exam;
+        $studentName = $result->student_name ?: $result->identifier ?: 'hasil tidak cocok';
+
+        $result->delete();
+
+        ActivityLog::record('exam_result_deleted', "Admin menghapus hasil tidak cocok {$studentName}.", exam: $exam, request: request());
+
+        return redirect()
+            ->route('admin.results.index', ['exam_id' => $exam?->id])
+            ->with('status', 'Hasil tidak cocok berhasil dihapus.');
+    }
+
     private function importRows(array $rows, Exam $exam): array
     {
         $header = null;
