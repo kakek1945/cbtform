@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminExamResultController extends Controller
 {
@@ -36,34 +37,6 @@ class AdminExamResultController extends Controller
             ->withQueryString();
 
         return view('admin.results.index', compact('exams', 'selectedExam', 'results'));
-    }
-
-    public function import(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'exam_id' => ['required', 'exists:exams,id'],
-            'file' => ['required', 'file', 'max:5120'],
-        ]);
-
-        $file = $validated['file'];
-        $extension = strtolower($file->getClientOriginalExtension());
-
-        if (! in_array($extension, ['csv', 'txt'], true)) {
-            return back()->withErrors([
-                'file' => 'File hasil harus CSV. Dari Google Sheets pilih File > Download > Comma separated values (.csv).',
-            ]);
-        }
-
-        $exam = Exam::findOrFail($validated['exam_id']);
-        $rows = $this->readCsvRows($file->getRealPath());
-
-        [$imported, $unmatched] = $this->importRows($rows, $exam);
-
-        ActivityLog::record('exam_results_imported', "Admin import {$imported} hasil untuk ujian {$exam->title}.", exam: $exam, request: $request);
-
-        return redirect()
-            ->route('admin.results.index', ['exam_id' => $exam->id])
-            ->with('status', "{$imported} hasil berhasil diimport. {$unmatched} baris belum cocok dengan data siswa.");
     }
 
     public function sync(Request $request): RedirectResponse
@@ -106,6 +79,77 @@ class AdminExamResultController extends Controller
         return redirect()
             ->route('admin.results.index', ['exam_id' => $exam->id])
             ->with('status', "{$imported} hasil berhasil disinkronkan dari Google Sheets. {$unmatched} baris belum cocok dengan data siswa.");
+    }
+
+    public function download(Request $request): StreamedResponse
+    {
+        $validated = $request->validate([
+            'exam_id' => ['required', 'exists:exams,id'],
+        ]);
+
+        $exam = Exam::findOrFail($validated['exam_id']);
+        $filename = 'hasil-ujian-'.$exam->id.'-'.str($exam->title)->slug()->toString().'.csv';
+
+        ActivityLog::record('exam_results_downloaded', "Admin download hasil ujian {$exam->title}.", exam: $exam, request: $request);
+
+        return response()->streamDownload(function () use ($exam): void {
+            $handle = fopen('php://output', 'w');
+
+            fwrite($handle, "\xEF\xBB\xBF");
+
+            fputcsv($handle, [
+                'No',
+                'Ujian',
+                'Mapel',
+                'Kelas Ujian',
+                'Nama',
+                'NIS',
+                'Username',
+                'Email',
+                'Identifier',
+                'Kelas Siswa',
+                'Nilai',
+                'Nilai Maksimal',
+                'Persentase',
+                'Waktu Submit',
+                'Status Cocok',
+                'Waktu Sinkron',
+            ]);
+
+            ExamResult::query()
+                ->with('user')
+                ->where('exam_id', $exam->id)
+                ->oldest('submitted_at')
+                ->oldest('id')
+                ->chunk(200, function ($results) use ($handle, $exam): void {
+                    static $number = 1;
+
+                    foreach ($results as $result) {
+                        fputcsv($handle, [
+                            $number++,
+                            $exam->title,
+                            $exam->subject,
+                            $exam->getAttribute('class'),
+                            $result->user?->name ?? $result->student_name ?? '',
+                            $result->nis ?: $result->user?->nis,
+                            $result->user?->username,
+                            $result->user?->email,
+                            $result->identifier,
+                            $result->class ?: $result->user?->getAttribute('class'),
+                            $result->score,
+                            $result->max_score,
+                            filled($result->percentage) ? $result->percentage.'%' : '',
+                            $result->submitted_at?->format('Y-m-d H:i:s'),
+                            $result->user ? 'Cocok' : 'Belum cocok',
+                            $result->imported_at?->format('Y-m-d H:i:s'),
+                        ]);
+                    }
+                });
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 
     private function importRows(array $rows, Exam $exam): array
@@ -243,26 +287,6 @@ class AdminExamResultController extends Controller
         } catch (\Throwable) {
             return null;
         }
-    }
-
-    private function readCsvRows(string $path): array
-    {
-        $content = file_get_contents($path) ?: '';
-        $firstLine = strtok($content, "\r\n") ?: '';
-        $delimiter = collect([',', ';', "\t"])
-            ->sortByDesc(fn ($delimiter) => substr_count($firstLine, $delimiter))
-            ->first();
-
-        $rows = [];
-        $handle = fopen($path, 'r');
-
-        while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
-            $rows[] = $row;
-        }
-
-        fclose($handle);
-
-        return $rows;
     }
 
     private function readCsvString(string $content): array

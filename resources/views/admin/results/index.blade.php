@@ -8,12 +8,12 @@
             <x-icon name="report" class="size-6" />
         </div>
         <div>
-            <p class="text-sm font-semibold uppercase tracking-[.18em] text-slate-500">Google Sheets CSV</p>
+            <p class="text-sm font-semibold uppercase tracking-[.18em] text-slate-500">Google Sheets</p>
             <h1 class="text-2xl font-bold tracking-tight text-[#0b2f57]">Hasil Ujian</h1>
         </div>
     </div>
 
-    <section class="mb-5 grid gap-4 xl:grid-cols-3">
+    <section class="mb-5 grid gap-4 xl:grid-cols-2">
         <form class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" method="GET" action="{{ route('admin.results.index') }}">
             <label class="text-sm font-semibold text-slate-700" for="exam-filter">Pilih Ujian</label>
             <div class="mt-2 flex flex-col gap-3 sm:flex-row">
@@ -27,7 +27,7 @@
                 <button class="rounded-2xl bg-[#0b2f57] px-5 py-3 font-bold text-white" type="submit">Tampilkan</button>
             </div>
             <p class="mt-3 text-sm text-slate-500">
-                Pilih ujian untuk melihat hasil yang sudah diimport.
+                Pilih ujian untuk melihat hasil yang sudah disinkronkan.
             </p>
         </form>
 
@@ -46,23 +46,6 @@
                 Sheet harus bisa dibaca lewat link. Set akses Google Sheets ke <strong>Anyone with the link can view</strong>.
             </p>
         </form>
-
-        <form class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" method="POST" action="{{ route('admin.results.import') }}" enctype="multipart/form-data">
-            @csrf
-            <input name="exam_id" type="hidden" value="{{ $selectedExam?->id }}">
-
-            <label class="text-sm font-semibold text-slate-700" for="result-file">Import Manual CSV</label>
-            <div class="mt-2 grid gap-3 md:grid-cols-[1fr_auto]">
-                <input id="result-file" class="rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm" name="file" type="file" accept=".csv,text/csv" required @disabled(! $selectedExam)>
-                <button class="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#DFD0B8] px-5 py-3 font-bold text-[#222831] hover:bg-[#cfc0a9]" type="submit" @disabled(! $selectedExam)>
-                    <x-icon name="upload" class="size-5" />
-                    Import Hasil
-                </button>
-            </div>
-            <p class="mt-3 text-sm leading-6 text-slate-500">
-                Dari Google Sheets pilih <strong>File &gt; Download &gt; CSV</strong>. Header minimal berisi kolom nilai seperti <code>Score</code>, <code>Skor</code>, atau <code>Nilai</code>. Untuk pencocokan siswa, sertakan <code>username</code>, <code>nis</code>, atau <code>email</code>.
-            </p>
-        </form>
     </section>
 
     <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
@@ -74,9 +57,16 @@
                 </h2>
             </div>
             @if ($selectedExam)
-                <span class="rounded-full bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700">
-                    {{ $results->total() }} hasil
-                </span>
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="rounded-full bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700">
+                        {{ $results->total() }} hasil
+                    </span>
+                    <a class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:border-[#948979] hover:text-[#222831]"
+                        href="{{ route('admin.results.download', ['exam_id' => $selectedExam->id]) }}">
+                        <x-icon name="download" class="size-4" />
+                        Download CSV
+                    </a>
+                </div>
             @endif
         </div>
 
@@ -121,7 +111,7 @@
                     @empty
                         <tr>
                             <td class="px-6 py-8 text-center text-slate-500" colspan="7">
-                                Belum ada hasil yang diimport untuk ujian ini.
+                                Belum ada hasil yang disinkronkan untuk ujian ini.
                             </td>
                         </tr>
                     @endforelse

@@ -44,8 +44,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/monitoring', AdminMonitoringController::class)->name('monitoring.index');
         Route::delete('/monitoring/{session}/reset', [AdminMonitoringController::class, 'reset'])->name('monitoring.reset');
         Route::get('/results', [AdminExamResultController::class, 'index'])->name('results.index');
-        Route::post('/results/import', [AdminExamResultController::class, 'import'])->name('results.import');
         Route::post('/results/sync', [AdminExamResultController::class, 'sync'])->name('results.sync');
+        Route::get('/results/download', [AdminExamResultController::class, 'download'])->name('results.download');
         Route::get('/activity-logs', ActivityLogController::class)->name('activity-logs.index');
     });
 });
