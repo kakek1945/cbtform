@@ -88,7 +88,6 @@
                         </div>
                     </div>
 
-                    <x-theme-toggle class="shrink-0" />
                 </div>
 
                 @auth
@@ -104,10 +103,6 @@
                     </nav>
                 @endauth
             </header>
-            @endif
-
-            @if (auth()->check() && ! $isAdmin && ! $isWideContent)
-                <x-theme-toggle class="fixed right-4 top-4 z-50" />
             @endif
 
             @php($mainWidth = $isWideContent ? 'w-[min(1600px,calc(100%-1rem))]' : 'w-[min(1280px,calc(100%-1.5rem))]')
