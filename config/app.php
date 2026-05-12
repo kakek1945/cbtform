@@ -107,6 +107,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Service Providers
+    |--------------------------------------------------------------------------
+    |
+    | Laravel normally resolves these default providers automatically. Listing
+    | them explicitly keeps serverless deployments predictable when bootstrap
+    | cache files are intentionally excluded from the deployment artifact.
+    |
+    */
+
+    'providers' => Illuminate\Support\ServiceProvider::defaultProviders()->merge([
+        App\Providers\AppServiceProvider::class,
+    ])->toArray(),
+
+    /*
+    |--------------------------------------------------------------------------
     | Maintenance Mode Driver
     |--------------------------------------------------------------------------
     |
