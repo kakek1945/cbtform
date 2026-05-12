@@ -5,12 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', config('app.name', 'Form CBT'))</title>
+    <script>
+        (() => {
+            const theme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            document.documentElement.classList.toggle('dark', theme === 'dark' || (!theme && prefersDark));
+        })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
 <body class="github-theme min-h-screen bg-[#f6f8fa] text-[#24292f] antialiased">
     @php
         $isAdmin = auth()->check() && auth()->user()->isAdmin();
+        $isWideContent = trim($__env->yieldContent('wideContent'));
         $navItems = auth()->check()
             ? ($isAdmin
                 ? [
@@ -79,6 +88,7 @@
                         </div>
                     </div>
 
+                    <x-theme-toggle class="shrink-0" />
                 </div>
 
                 @auth
@@ -96,7 +106,11 @@
             </header>
             @endif
 
-            @php($mainWidth = trim($__env->yieldContent('wideContent')) ? 'w-[min(1600px,calc(100%-1rem))]' : 'w-[min(1280px,calc(100%-1.5rem))]')
+            @if (auth()->check() && ! $isAdmin && ! $isWideContent)
+                <x-theme-toggle class="fixed right-4 top-4 z-50" />
+            @endif
+
+            @php($mainWidth = $isWideContent ? 'w-[min(1600px,calc(100%-1rem))]' : 'w-[min(1280px,calc(100%-1.5rem))]')
             <main class="mx-auto {{ $mainWidth }} {{ $isAdmin || ! auth()->check() ? 'py-6' : 'py-4 sm:py-6' }}">
                 @if (session('status'))
                     <div class="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
@@ -118,5 +132,33 @@
     </div>
 
     @stack('scripts')
+    <script>
+        (() => {
+            const buttons = document.querySelectorAll('.theme-toggle');
+            const moonIcons = document.querySelectorAll('.theme-toggle-icon-moon');
+            const sunIcons = document.querySelectorAll('.theme-toggle-icon-sun');
+
+            const refreshTheme = () => {
+                const dark = document.documentElement.classList.contains('dark');
+
+                moonIcons.forEach((icon) => icon.classList.toggle('hidden', dark));
+                sunIcons.forEach((icon) => icon.classList.toggle('hidden', !dark));
+                buttons.forEach((button) => {
+                    button.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+                    button.setAttribute('title', dark ? 'Light mode' : 'Dark mode');
+                });
+            };
+
+            buttons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const dark = document.documentElement.classList.toggle('dark');
+                    localStorage.setItem('theme', dark ? 'dark' : 'light');
+                    refreshTheme();
+                });
+            });
+
+            refreshTheme();
+        })();
+    </script>
 </body>
 </html>

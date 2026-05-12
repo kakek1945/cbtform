@@ -2,25 +2,9 @@
 
 @section('title', 'Masuk CBT')
 
-@push('head')
-    <script>
-        (() => {
-            const theme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-            if (theme === 'dark' || (!theme && prefersDark)) {
-                document.documentElement.classList.add('dark');
-            }
-        })();
-    </script>
-@endpush
-
 @section('content')
     <section class="-mx-3 -my-6 flex min-h-screen items-center justify-center bg-[#f6f8fa] px-4 py-8 sm:-mx-4 lg:-mx-8">
-        <button class="theme-toggle fixed right-4 top-4 z-50 inline-flex size-10 items-center justify-center rounded-md border border-[#d0d7de] bg-white text-[#24292f] hover:bg-[#f6f8fa]" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
-            <x-icon name="moon" class="theme-toggle-icon-moon size-4" />
-            <x-icon name="sun" class="theme-toggle-icon-sun hidden size-4" />
-        </button>
+        <x-theme-toggle class="fixed right-4 top-4 z-50" />
 
         <form class="w-full max-w-sm rounded-xl border border-[#d0d7de] bg-white p-6 text-center shadow-sm" method="POST" action="{{ route('login.store') }}">
             @csrf
@@ -59,30 +43,6 @@
 @push('scripts')
     <script>
         (() => {
-            const buttons = document.querySelectorAll('.theme-toggle');
-            const moonIcons = document.querySelectorAll('.theme-toggle-icon-moon');
-            const sunIcons = document.querySelectorAll('.theme-toggle-icon-sun');
-
-            const refreshTheme = () => {
-                const dark = document.documentElement.classList.contains('dark');
-                moonIcons.forEach((icon) => icon.classList.toggle('hidden', dark));
-                sunIcons.forEach((icon) => icon.classList.toggle('hidden', !dark));
-                buttons.forEach((button) => {
-                    button.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
-                    button.setAttribute('title', dark ? 'Light mode' : 'Dark mode');
-                });
-            };
-
-            buttons.forEach((button) => {
-                button.addEventListener('click', () => {
-                    const dark = document.documentElement.classList.toggle('dark');
-                    localStorage.setItem('theme', dark ? 'dark' : 'light');
-                    refreshTheme();
-                });
-            });
-
-            refreshTheme();
-
             const passwordInput = document.getElementById('password-input');
             const passwordToggle = document.getElementById('password-toggle');
             const eye = document.querySelector('.password-eye');
