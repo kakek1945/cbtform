@@ -6,8 +6,8 @@
     <section class="grid gap-6 lg:grid-cols-[.78fr_1.22fr]">
         <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div class="flex items-center gap-3">
-                <div class="flex size-12 items-center justify-center rounded-2xl bg-sky-50 text-[#0b2f57] ring-1 ring-sky-100">
-                    <x-icon name="student" class="size-6" />
+                <div class="flex size-14 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 p-2">
+                    <x-app-logo class="size-full object-contain" alt="Logo CBT" />
                 </div>
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-[.18em] text-slate-500">Peserta Ujian</p>

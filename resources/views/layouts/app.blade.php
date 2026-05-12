@@ -29,8 +29,8 @@
         @if ($isAdmin)
             <aside class="hidden w-72 shrink-0 border-r border-[#d0d7de] bg-white text-[#24292f] lg:flex lg:min-h-screen lg:flex-col">
                 <div class="flex h-20 items-center gap-3 border-b border-[#d0d7de] px-6">
-                    <div class="flex size-10 items-center justify-center rounded-xl bg-[#ddf4ff] text-[#0969da] ring-1 ring-[#b6e3ff]">
-                        <x-icon name="shield" class="size-5" />
+                    <div class="flex size-11 items-center justify-center rounded-xl border border-[#d0d7de] bg-[#f6f8fa] p-1.5">
+                        <x-app-logo class="size-full object-contain" alt="Logo CBT" />
                     </div>
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-[.16em] text-[#57606a]">Aplikasi CBT</p>
@@ -69,9 +69,14 @@
             @if ($isAdmin)
             <header class="sticky top-0 z-30 border-b border-[#d0d7de] bg-white/95 text-[#24292f] backdrop-blur">
                 <div class="mx-auto flex h-16 w-[min(1280px,calc(100%-1.5rem))] items-center justify-between gap-4">
-                    <div class="min-w-0">
-                        <p class="text-xs font-semibold uppercase tracking-[.16em] text-[#57606a]">Sistem Ujian</p>
-                        <h1 class="truncate text-lg font-semibold text-[#24292f]">@yield('title', 'Form CBT')</h1>
+                    <div class="flex min-w-0 items-center gap-3">
+                        <div class="flex size-10 shrink-0 items-center justify-center rounded-lg border border-[#d0d7de] bg-[#f6f8fa] p-1.5 lg:hidden">
+                            <x-app-logo class="size-full object-contain" alt="Logo CBT" />
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-xs font-semibold uppercase tracking-[.16em] text-[#57606a]">Sistem Ujian</p>
+                            <h1 class="truncate text-lg font-semibold text-[#24292f]">@yield('title', 'Form CBT')</h1>
+                        </div>
                     </div>
 
                 </div>
