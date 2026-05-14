@@ -26,11 +26,11 @@ class AuthController extends Controller
         $login = $validated['login'];
         $field = filter_var($login, FILTER_VALIDATE_EMAIL)
             ? 'email'
-            : (is_numeric($login) ? 'nis' : 'username');
+            : (is_numeric($login) ? 'nisn' : 'username');
 
         if (! Auth::attempt([$field => $login, 'password' => $validated['password']], $request->boolean('remember'))) {
             throw ValidationException::withMessages([
-                'login' => 'Username/NIS/email atau password tidak sesuai.',
+                'login' => 'Username/NISN/email atau password tidak sesuai.',
             ]);
         }
 

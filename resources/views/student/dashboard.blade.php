@@ -17,8 +17,8 @@
 
             <dl class="mt-6 grid gap-3 text-sm">
                 <div class="flex justify-between gap-4 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-100">
-                    <dt class="text-slate-500">NIS</dt>
-                    <dd class="font-bold text-slate-800">{{ $student->nis }}</dd>
+                    <dt class="text-slate-500">NISN</dt>
+                    <dd class="font-bold text-slate-800">{{ $student->nisn }}</dd>
                 </div>
                 <div class="flex justify-between gap-4 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-100">
                     <dt class="text-slate-500">Kelas</dt>

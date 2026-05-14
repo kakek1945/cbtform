@@ -34,7 +34,7 @@
         </select>
         <input class="rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#0b2f57] focus:ring-4 focus:ring-sky-100" name="date" type="date" value="{{ request('date') }}">
         <button class="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0b2f57] px-5 py-3 font-bold text-white hover:bg-[#092846] md:col-span-4" type="submit">
-            <x-icon name="settings" class="size-5" />
+            <x-icon name="check" class="size-5" />
             Filter
         </button>
     </form>
@@ -45,7 +45,7 @@
                 <thead class="bg-slate-50 text-xs font-bold uppercase tracking-wide text-slate-500">
                     <tr>
                         <th class="px-6 py-4">Siswa</th>
-                        <th class="px-6 py-4">NIS</th>
+                        <th class="px-6 py-4">NISN</th>
                         <th class="px-6 py-4">Kelas</th>
                         <th class="px-6 py-4">Ujian</th>
                         <th class="px-6 py-4">Status</th>
@@ -61,7 +61,7 @@
                     @forelse ($sessions as $session)
                         <tr class="hover:bg-slate-50">
                             <td class="px-6 py-4 font-bold text-slate-900">{{ $session->user->name }}</td>
-                            <td class="px-6 py-4 text-slate-600">{{ $session->user->nis }}</td>
+                            <td class="px-6 py-4 text-slate-600">{{ $session->user->nisn }}</td>
                             <td class="px-6 py-4 text-slate-600">{{ $session->user->getAttribute('class') }}</td>
                             <td class="px-6 py-4 text-slate-600">{{ $session->exam->title }}</td>
                             <td class="px-6 py-4">
@@ -77,7 +77,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button class="inline-flex items-center gap-2 rounded-xl bg-red-600 px-3 py-2 text-xs font-bold text-white hover:bg-red-700" type="submit">
-                                        <x-icon name="settings" class="size-4" />
+                                        <x-icon name="trash" class="size-4" />
                                         Reset
                                     </button>
                                 </form>

@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             ['username' => 'admin'],
             [
                 'name' => 'Admin CBT',
-                'nis' => null,
+                'nisn' => null,
                 'class' => null,
                 'email' => 'admin@example.com',
                 'password' => 'password',
@@ -26,9 +26,9 @@ class DatabaseSeeder extends Seeder
         );
 
         $students = [
-            ['name' => 'Alya Putri', 'nis' => '1001', 'class' => 'XII IPA 1', 'username' => 'siswa001'],
-            ['name' => 'Bima Prakoso', 'nis' => '1002', 'class' => 'XII IPA 1', 'username' => 'siswa002'],
-            ['name' => 'Citra Lestari', 'nis' => '2001', 'class' => 'XII IPS 1', 'username' => 'siswa003'],
+            ['name' => 'Alya Putri', 'nisn' => '1001', 'class' => 'XII IPA 1', 'username' => 'siswa001'],
+            ['name' => 'Bima Prakoso', 'nisn' => '1002', 'class' => 'XII IPA 1', 'username' => 'siswa002'],
+            ['name' => 'Citra Lestari', 'nisn' => '2001', 'class' => 'XII IPS 1', 'username' => 'siswa003'],
         ];
 
         $createdStudents = collect();
@@ -50,11 +50,12 @@ class DatabaseSeeder extends Seeder
         $literasi = Exam::query()->updateOrCreate(
             ['title' => 'Ujian Literasi Digital'],
             [
+                'code' => 'LITERASI-XIIIPA1',
                 'subject' => 'Informatika',
                 'class' => 'XII IPA 1',
                 'google_form_url' => $dummyForm,
                 'prefill_name_field' => 'entry.111111',
-                'prefill_nis_field' => 'entry.222222',
+                'prefill_nisn_field' => 'entry.222222',
                 'prefill_class_field' => 'entry.333333',
                 'prefill_exam_field' => 'entry.444444',
                 'start_time' => now()->subMinutes(15),
@@ -69,11 +70,12 @@ class DatabaseSeeder extends Seeder
         $tryout = Exam::query()->updateOrCreate(
             ['title' => 'Tryout Ekonomi'],
             [
+                'code' => 'EKONOMI-XIIIPS1',
                 'subject' => 'Ekonomi',
                 'class' => 'XII IPS 1',
                 'google_form_url' => $dummyForm,
                 'prefill_name_field' => 'entry.111111',
-                'prefill_nis_field' => 'entry.222222',
+                'prefill_nisn_field' => 'entry.222222',
                 'prefill_class_field' => 'entry.333333',
                 'prefill_exam_field' => 'entry.444444',
                 'start_time' => now()->addHour(),

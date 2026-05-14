@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'user_id',
     'identifier',
     'student_name',
-    'nis',
+    'nisn',
     'class',
     'score',
     'max_score',

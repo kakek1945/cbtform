@@ -20,7 +20,7 @@
         </div>
 
         <div class="mt-6 grid gap-4 md:grid-cols-2">
-            @foreach ([['title','Nama Ujian'], ['subject','Mata Pelajaran'], ['class','Kelas']] as [$name, $label])
+            @foreach ([['title','Nama Ujian'], ['code','Kode Ujian'], ['subject','Mata Pelajaran'], ['class','Kelas']] as [$name, $label])
                 <label class="block">
                     <span class="text-sm font-semibold text-slate-700">{{ $label }}</span>
                     <input class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#0b2f57] focus:ring-4 focus:ring-sky-100" name="{{ $name }}" value="{{ old($name, $exam->getAttribute($name)) }}" required>
@@ -76,40 +76,4 @@
         </div>
     </form>
 
-    @if ($exam->exists)
-        <section class="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-            <div class="flex flex-col justify-between gap-4 md:flex-row md:items-start">
-                <div class="flex gap-3">
-                    <div class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
-                        <x-icon name="upload" class="size-6" />
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold uppercase tracking-[.18em] text-slate-500">Whitelist Peserta</p>
-                        <h2 class="text-2xl font-bold tracking-tight text-[#0b2f57]">Import Peserta Ujian</h2>
-                        <p class="mt-2 max-w-3xl leading-7 text-slate-600">Peserta yang diimport menjadi daftar akses untuk ujian ini. Hanya username dan password peserta tersebut yang dapat melihat serta mengerjakan ujian.</p>
-                        <p class="mt-2 text-sm font-bold text-emerald-700">Total peserta saat ini: {{ $exam->participants_count }}</p>
-                    </div>
-                </div>
-                <a class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 font-bold text-[#0b2f57] hover:bg-slate-50" href="{{ route('admin.exams.participants.template', $exam) }}">
-                    <x-icon name="file" class="size-5" />
-                    Download Template CSV
-                </a>
-            </div>
-
-            <form class="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5" method="POST" action="{{ route('admin.exams.participants.import', $exam) }}" enctype="multipart/form-data">
-                @csrf
-                <label class="text-sm font-semibold text-slate-700" for="participants-file">File Peserta CSV</label>
-                <div class="mt-2 grid gap-3 md:grid-cols-[1fr_auto]">
-                    <input id="participants-file" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" name="file" type="file" accept=".csv,text/csv" required>
-                    <button class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-700 px-5 py-3 font-bold text-white hover:bg-emerald-800" type="submit">
-                        <x-icon name="upload" class="size-5" />
-                        Import Peserta
-                    </button>
-                </div>
-                <p class="mt-3 text-sm leading-6 text-slate-500">
-                    Upload file <strong>.csv</strong>. Format: <code>name,nis,class,username,email,password</code>. Kolom <code>class</code> boleh kosong, sistem memakai kelas ujian ini.
-                </p>
-            </form>
-        </section>
-    @endif
 @endsection

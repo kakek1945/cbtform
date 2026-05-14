@@ -36,12 +36,11 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', AdminDashboardController::class)->name('dashboard');
+        Route::get('/students/template', [AdminStudentController::class, 'downloadTemplate'])->name('students.template');
         Route::resource('/students', AdminStudentController::class);
         Route::post('/students/{student}/reset-password', [AdminStudentController::class, 'resetPassword'])->name('students.reset-password');
         Route::post('/students/import-csv', [AdminStudentController::class, 'importCsv'])->name('students.import-csv');
         Route::resource('/exams', AdminExamController::class);
-        Route::post('/exams/{exam}/participants/import', [AdminExamController::class, 'importParticipants'])->name('exams.participants.import');
-        Route::get('/exams/{exam}/participants/template', [AdminExamController::class, 'downloadParticipantTemplate'])->name('exams.participants.template');
         Route::get('/monitoring', AdminMonitoringController::class)->name('monitoring.index');
         Route::delete('/monitoring/{session}/reset', [AdminMonitoringController::class, 'reset'])->name('monitoring.reset');
         Route::get('/results', [AdminExamResultController::class, 'index'])->name('results.index');

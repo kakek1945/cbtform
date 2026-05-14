@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Exam;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class AdminExamController extends Controller
@@ -64,132 +63,22 @@ class AdminExamController extends Controller
         return redirect()->route('admin.exams.index')->with('status', 'Ujian berhasil dihapus.');
     }
 
-    public function importParticipants(Request $request, Exam $exam): RedirectResponse
-    {
-        $validated = $request->validate([
-            'file' => ['required', 'file', 'max:5120'],
-        ]);
-
-        $extension = strtolower($validated['file']->getClientOriginalExtension());
-
-        if (! in_array($extension, ['csv', 'txt'], true)) {
-            return back()->withErrors([
-                'file' => 'File peserta harus berformat CSV. Jika data masih Excel, simpan sebagai CSV terlebih dahulu.',
-            ]);
-        }
-
-        $rows = $this->readCsvRows($validated['file']->getRealPath());
-
-        $participantIds = [];
-        $imported = 0;
-        $header = null;
-
-        foreach ($rows as $row) {
-            if (! is_array($row) || count(array_filter($row, fn ($value) => filled($value))) === 0) {
-                continue;
-            }
-
-            if ($header === null) {
-                $header = array_map(fn ($value) => $this->normalizeCsvHeader((string) $value), $row);
-
-                if (! in_array('username', $header, true)) {
-                    return back()->withErrors([
-                        'file' => 'Header CSV wajib memiliki kolom username. Gunakan template CSV dari tombol Download Template CSV.',
-                    ]);
-                }
-
-                continue;
-            }
-
-            $data = array_combine($header, array_slice(array_pad($row, count($header), null), 0, count($header)));
-
-            if (! $data || blank($data['username'] ?? null)) {
-                continue;
-            }
-
-            $student = User::updateOrCreate(
-                ['username' => trim((string) $data['username'])],
-                [
-                    'name' => trim((string) ($data['name'] ?? $data['nama'] ?? '')),
-                    'nis' => trim((string) ($data['nis'] ?? '')),
-                    'class' => trim((string) ($data['class'] ?? $data['kelas'] ?? $exam->getAttribute('class'))),
-                    'email' => filled($data['email'] ?? null) ? trim((string) $data['email']) : null,
-                    'password' => filled($data['password'] ?? null) ? trim((string) $data['password']) : 'password',
-                    'role' => 'siswa',
-                ]
-            );
-
-            $participantIds[] = $student->id;
-            $imported++;
-        }
-
-        if ($participantIds !== []) {
-            $exam->participants()->syncWithoutDetaching($participantIds);
-        }
-
-        ActivityLog::record('exam_participants_imported', "Admin import {$imported} peserta untuk ujian {$exam->title}.", exam: $exam, request: $request);
-
-        return back()->with('status', "{$imported} peserta berhasil diimport untuk ujian {$exam->title}.");
-    }
-
-    public function downloadParticipantTemplate(Exam $exam): Response
-    {
-        $class = $exam->getAttribute('class');
-        $safeClass = str($class)->replace(',', ' ')->toString();
-        $rows = [
-            ['name', 'nis', 'class', 'username', 'email', 'password'],
-            ['Contoh Peserta 1', '9001', $safeClass, 'peserta9001', 'peserta9001@example.com', 'password123'],
-            ['Contoh Peserta 2', '9002', $safeClass, 'peserta9002', 'peserta9002@example.com', 'password123'],
-        ];
-
-        $csv = collect($rows)
-            ->map(fn ($row) => collect($row)->map(fn ($value) => '"'.str_replace('"', '""', $value).'"')->implode(','))
-            ->implode("\r\n");
-
-        return response($csv."\r\n", 200, [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="template-peserta-ujian-'.$exam->id.'.csv"',
-        ]);
-    }
-
-    private function readCsvRows(string $path): array
-    {
-        $content = file_get_contents($path) ?: '';
-        $firstLine = strtok($content, "\r\n") ?: '';
-        $delimiter = collect([',', ';', "\t"])
-            ->sortByDesc(fn ($delimiter) => substr_count($firstLine, $delimiter))
-            ->first();
-
-        $rows = [];
-        $handle = fopen($path, 'r');
-
-        while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
-            $rows[] = $row;
-        }
-
-        fclose($handle);
-
-        return $rows;
-    }
-
-    private function normalizeCsvHeader(string $value): string
-    {
-        $value = preg_replace('/^\xEF\xBB\xBF/', '', $value) ?? $value;
-
-        return str($value)->lower()->trim()->replace([' ', '-'], '_')->toString();
-    }
-
     private function validated(Request $request): array
     {
+        $request->merge([
+            'code' => str((string) $request->input('code'))->upper()->trim()->toString(),
+        ]);
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'code' => ['required', 'string', 'max:50', Rule::unique('exams', 'code')->ignore($request->route('exam'))],
             'subject' => ['required', 'string', 'max:255'],
             'class' => ['required', 'string', 'max:255'],
             'google_form_url' => ['required', 'url'],
             'result_spreadsheet_id' => ['nullable', 'string', 'max:255'],
             'result_sheet_name' => ['nullable', 'string', 'max:255'],
             'prefill_name_field' => ['nullable', 'string', 'max:255'],
-            'prefill_nis_field' => ['nullable', 'string', 'max:255'],
+            'prefill_nisn_field' => ['nullable', 'string', 'max:255'],
             'prefill_class_field' => ['nullable', 'string', 'max:255'],
             'prefill_exam_field' => ['nullable', 'string', 'max:255'],
             'start_time' => ['required', 'date'],

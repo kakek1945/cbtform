@@ -39,7 +39,7 @@
             <input id="spreadsheet-id" class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm" name="result_spreadsheet_id" value="{{ old('result_spreadsheet_id', $selectedExam?->result_spreadsheet_id) }}" placeholder="Spreadsheet ID atau URL Google Sheets" required @disabled(! $selectedExam)>
             <input class="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm" name="result_sheet_name" value="{{ old('result_sheet_name', $selectedExam?->result_sheet_name ?? 'Form Responses 1') }}" placeholder="Nama sheet/tab, contoh: Form Responses 1" @disabled(! $selectedExam)>
             <button class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#DFD0B8] px-5 py-3 font-bold text-[#222831] hover:bg-[#cfc0a9]" type="submit" @disabled(! $selectedExam)>
-                <x-icon name="settings" class="size-5" />
+                <x-icon name="sync" class="size-5" />
                 Sinkronkan
             </button>
             <p class="mt-3 text-sm leading-6 text-slate-500">

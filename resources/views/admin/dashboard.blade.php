@@ -5,8 +5,8 @@
 @section('content')
     @php
         $cards = [
-            ['label' => 'Siswa', 'value' => $summary['students'], 'icon' => 'student', 'tone' => 'text-[#0b2f57] bg-sky-50'],
             ['label' => 'Ujian', 'value' => $summary['exams'], 'icon' => 'exam', 'tone' => 'text-[#0b2f57] bg-sky-50'],
+            ['label' => 'Siswa', 'value' => $summary['students'], 'icon' => 'student', 'tone' => 'text-[#0b2f57] bg-sky-50'],
             ['label' => 'Sedang Ujian', 'value' => $summary['active'], 'icon' => 'monitor', 'tone' => 'text-emerald-700 bg-emerald-50'],
             ['label' => 'Selesai', 'value' => $summary['finished'], 'icon' => 'report', 'tone' => 'text-slate-700 bg-slate-100'],
             ['label' => 'Waktu Habis', 'value' => $summary['expired'], 'icon' => 'calendar', 'tone' => 'text-amber-700 bg-amber-50'],

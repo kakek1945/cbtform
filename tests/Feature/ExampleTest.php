@@ -57,18 +57,18 @@ class ExampleTest extends TestCase
             ->assertOk();
     }
 
-    public function test_admin_can_import_exam_participants_from_csv(): void
+    public function test_admin_can_import_students_with_exam_code_from_csv(): void
     {
         $this->seed();
 
         $admin = User::where('username', 'admin')->firstOrFail();
         $exam = \App\Models\Exam::firstOrFail();
-        $csv = "name,nis,class,username,email,password\n"
-            ."Peserta Baru,7777,{$exam->getAttribute('class')},peserta7777,peserta7777@example.com,password123\n";
+        $csv = "name,nisn,class,username,email,password,kode_ujian\n"
+            ."Peserta Baru,7777,{$exam->getAttribute('class')},peserta7777,peserta7777@example.com,password123,{$exam->code}\n";
         $file = UploadedFile::fake()->createWithContent('peserta.csv', $csv);
 
         $this->actingAs($admin)
-            ->post(route('admin.exams.participants.import', $exam), ['file' => $file])
+            ->post(route('admin.students.import-csv'), ['file' => $file])
             ->assertRedirect();
 
         $student = User::where('username', 'peserta7777')->firstOrFail();
@@ -79,18 +79,18 @@ class ExampleTest extends TestCase
         ]);
     }
 
-    public function test_admin_can_import_exam_participants_from_semicolon_csv(): void
+    public function test_admin_can_import_students_with_exam_code_from_semicolon_csv(): void
     {
         $this->seed();
 
         $admin = User::where('username', 'admin')->firstOrFail();
         $exam = \App\Models\Exam::firstOrFail();
-        $csv = "\xEF\xBB\xBFname;nis;class;username;email;password\n"
-            ."Peserta Titik Koma;8888;{$exam->getAttribute('class')};peserta8888;peserta8888@example.com;password123\n";
+        $csv = "\xEF\xBB\xBFname;nisn;class;username;email;password;kode_ujian\n"
+            ."Peserta Titik Koma;8888;{$exam->getAttribute('class')};peserta8888;peserta8888@example.com;password123;{$exam->code}\n";
         $file = UploadedFile::fake()->createWithContent('peserta-semicolon.csv', $csv);
 
         $this->actingAs($admin)
-            ->post(route('admin.exams.participants.import', $exam), ['file' => $file])
+            ->post(route('admin.students.import-csv'), ['file' => $file])
             ->assertRedirect();
 
         $student = User::where('username', 'peserta8888')->firstOrFail();

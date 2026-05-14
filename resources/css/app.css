@@ -6,18 +6,49 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
 @layer base {
+    html {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+
     body {
         color-scheme: light;
         background: #f6f8fa;
+        color: #24292f;
+        font-size: 14px;
+        line-height: 1.5;
     }
 }
 
 @layer components {
+    .topbar {
+        box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.08);
+    }
+
+    .flash,
+    .errors {
+        background: #ffffff;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 12px 14px;
+    }
+
+    .flash {
+        border-left: 4px solid #1f883d;
+    }
+
+    .errors {
+        border-left: 4px solid #cf222e;
+        color: #cf222e;
+    }
+
     .github-theme :is(.bg-white, .bg-white\/88, .bg-white\/90, .bg-white\/95) {
         background-color: #ffffff;
         color: #24292f;
@@ -28,7 +59,20 @@
         color: #57606a;
     }
 
-    .github-theme :is(.border-slate-200, .border-slate-100, .ring-slate-100, .ring-slate-200) {
+    .github-theme :is(.bg-sky-50) {
+        background-color: #ddf4ff;
+    }
+
+    .github-theme :is(.bg-emerald-50) {
+        background-color: #dafbe1;
+    }
+
+    .github-theme :is(.bg-amber-50) {
+        background-color: #fff8c5;
+        color: #9a6700;
+    }
+
+    .github-theme :is(.border-slate-300, .border-slate-200, .border-slate-100, .ring-slate-100, .ring-slate-200, .ring-sky-100, .ring-emerald-100) {
         border-color: #d0d7de;
         --tw-ring-color: rgb(208 215 222 / 0.55);
     }
@@ -41,10 +85,20 @@
         color: #57606a;
     }
 
+    .github-theme :is(.text-emerald-700) {
+        color: #1f883d;
+    }
+
+    .github-theme :is(.text-sky-700, .text-\[\#0b2f57\], .text-\[\#0969da\]) {
+        color: #0969da;
+    }
+
     .github-theme :is(input, select, textarea) {
         background-color: #ffffff;
         border-color: #d0d7de;
+        border-radius: 6px;
         color: #24292f;
+        min-height: 36px;
     }
 
     .github-theme :is(input:focus, select:focus, textarea:focus) {
@@ -56,43 +110,34 @@
         color: #8c959f;
     }
 
-    .github-theme :is(thead.bg-slate-50) {
-        background-color: #f6f8fa;
+    .github-theme :is(button, a) {
+        text-underline-offset: 3px;
     }
 
-    .github-theme :is(.text-\[\#0b2f57\]) {
-        color: #0969da;
+    .github-theme :is(button:not(.theme-toggle), a[class*="bg-"], a[class*="border"]) {
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
     }
 
-    .github-theme :is(.bg-\[\#0b2f57\]) {
+    .github-theme input[type="file"]::file-selector-button {
+        border: 1px solid rgb(27 31 36 / 0.15);
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-right: 12px;
+        min-height: 32px;
+        padding: 5px 12px;
+    }
+
+    .github-theme :is(.bg-\[\#0b2f57\], .bg-\[\#0969da\]) {
         background-color: #0969da;
         background-image: none;
         color: #ffffff;
     }
 
-    .github-theme :is(.bg-\[\#DFD0B8\]) {
-        background-color: #0969da;
-        color: #ffffff;
-    }
-
-    .github-theme :is(.hover\:bg-\[\#cfc0a9\]:hover) {
-        background-color: #0757b8;
-    }
-
-    .github-theme :is(.bg-sky-50) {
-        background-color: #ddf4ff;
-    }
-
-    .github-theme :is(.bg-emerald-50) {
-        background-color: #dafbe1;
-    }
-
-    .github-theme :is(.text-emerald-700) {
-        color: #1f883d;
-    }
-
-    .github-theme :is(.text-sky-700) {
-        color: #0969da;
+    .github-theme :is(.hover\:bg-\[\#092846\]:hover, .hover\:bg-\[\#0757b8\]:hover) {
+        background-color: #0757b5;
     }
 
     .github-theme :is(.bg-emerald-700, .bg-teal-700) {
@@ -100,26 +145,106 @@
         color: #ffffff;
     }
 
+    .github-theme :is(.hover\:bg-emerald-800:hover) {
+        background-color: #1a7f37;
+    }
+
     .github-theme :is(.bg-red-600) {
         background-color: #cf222e;
         color: #ffffff;
     }
 
-    .github-theme :is(.bg-amber-50) {
-        background-color: #fff8c5;
-        color: #9a6700;
+    .github-theme :is(.hover\:bg-red-700:hover) {
+        background-color: #a40e26;
+    }
+
+    .github-theme :is(.bg-\[\#DFD0B8\]) {
+        background-color: #1f883d;
+        color: #ffffff;
+    }
+
+    .github-theme :is(.hover\:bg-\[\#cfc0a9\]:hover) {
+        background-color: #1a7f37;
     }
 
     .github-theme :is(.rounded-3xl, .rounded-2xl, .rounded-xl, .rounded-\[2rem\], .rounded-\[1\.75rem\], .rounded-\[1\.5rem\]) {
-        border-radius: 0.75rem;
+        border-radius: 6px;
     }
 
-    .github-theme :is(.shadow-xl, .shadow-2xl) {
-        box-shadow: 0 1px 2px rgb(31 35 40 / 0.04);
+    .github-theme :is(.shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl) {
+        box-shadow: 0 1px 0 rgba(27, 31, 36, 0.04);
+    }
+
+    .github-theme :is(table) {
+        border-collapse: collapse;
+        min-width: 760px;
+        width: 100%;
+    }
+
+    .github-theme :is(thead.bg-slate-50) {
+        background-color: #f6f8fa;
+    }
+
+    .github-theme :is(th) {
+        background: #f6f8fa;
+        border-bottom: 1px solid #d0d7de;
+        color: #57606a;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 10px 12px;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .github-theme :is(td) {
+        border-bottom: 1px solid #d8dee4;
+        padding: 12px;
+        vertical-align: top;
+    }
+
+    .github-theme :is(tbody tr:hover) {
+        background-color: #f6f8fa;
+    }
+
+    .github-theme :is(.rounded-full) {
+        border-radius: 999px;
+    }
+
+    .github-theme :is(.tracking-\[\.18em\], .tracking-wide) {
+        letter-spacing: 0.04em;
+    }
+
+    .github-theme :is(h1) {
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.25;
+    }
+
+    .github-theme :is(h2) {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.25;
     }
 
     .github-theme table tbody tr {
         transition: background-color 140ms ease;
+    }
+
+    @media (max-width: 700px) {
+        .topbar-inner {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .github-theme main :is(button:not(.theme-toggle), a[class*="bg-"], a[class*="border"]) {
+            justify-content: center;
+            width: 100%;
+        }
+
+        .github-theme :is(.overflow-x-auto) {
+            overflow-x: auto;
+        }
     }
 
     html.dark body.github-theme,

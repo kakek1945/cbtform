@@ -12,13 +12,14 @@ use Illuminate\Support\Carbon;
 
 #[Fillable([
     'title',
+    'code',
     'subject',
     'class',
     'google_form_url',
     'result_spreadsheet_id',
     'result_sheet_name',
     'prefill_name_field',
-    'prefill_nis_field',
+    'prefill_nisn_field',
     'prefill_class_field',
     'prefill_exam_field',
     'start_time',
@@ -102,7 +103,7 @@ class Exam extends Model
     {
         $params = array_filter([
             $this->prefill_name_field => $student->name,
-            $this->prefill_nis_field => $student->nis,
+            $this->prefill_nisn_field => $student->nisn,
             $this->prefill_class_field => $student->getAttribute('class'),
             $this->prefill_exam_field => $this->title,
         ], fn ($value, $key) => filled($key) && filled($value), ARRAY_FILTER_USE_BOTH);

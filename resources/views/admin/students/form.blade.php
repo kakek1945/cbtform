@@ -20,7 +20,7 @@
         </div>
 
         <div class="mt-6 grid gap-4 md:grid-cols-2">
-            @foreach ([['name','Nama'], ['nis','NIS'], ['class','Kelas'], ['username','Username'], ['email','Email']] as [$name, $label])
+            @foreach ([['name','Nama'], ['nisn','NISN'], ['class','Kelas'], ['username','Username'], ['email','Email']] as [$name, $label])
                 <label class="block">
                     <span class="text-sm font-semibold text-slate-700">{{ $label }}</span>
                     <input class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#0b2f57] focus:ring-4 focus:ring-sky-100" name="{{ $name }}" value="{{ old($name, $student->getAttribute($name)) }}" @if($name !== 'email') required @endif>

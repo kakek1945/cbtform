@@ -78,15 +78,15 @@ class ExamResultSyncer
                 continue;
             }
 
-            $rawIdentifier = $this->firstFilled($data, ['username', 'nis', 'email', 'email_address', 'alamat_email']);
+            $rawIdentifier = $this->firstFilled($data, ['username', 'nisn', 'nis', 'email', 'email_address', 'alamat_email']);
             $rawName = $this->firstFilled($data, ['name', 'nama', 'nama_lengkap']);
-            $rawNis = $this->firstFilled($data, ['nis']);
+            $rawNisn = $this->firstFilled($data, ['nisn', 'nis']);
             $rawClass = $this->firstFilled($data, ['class', 'kelas']);
             $student = $this->findStudent($rawIdentifier)
-                ?: $this->findStudentByProfile($rawName, $rawNis, $rawClass);
+                ?: $this->findStudentByProfile($rawName, $rawNisn, $rawClass);
             $identifier = $rawIdentifier
                 ?: $student?->username
-                ?: $student?->nis
+                ?: $student?->nisn
                 ?: md5(json_encode($data));
 
             if (! $student) {
@@ -100,7 +100,7 @@ class ExamResultSyncer
                 'user_id' => $student?->id,
                 'identifier' => $identifier,
                 'student_name' => $student?->name ?? $rawName,
-                'nis' => $student?->nis ?? $rawNis,
+                'nisn' => $student?->nisn ?? $rawNisn,
                 'class' => $student?->getAttribute('class') ?? $rawClass,
                 'score' => $score,
                 'max_score' => $maxScore,
@@ -134,16 +134,16 @@ class ExamResultSyncer
             ->where(function ($query) use ($identifier) {
                 $query
                     ->where('username', $identifier)
-                    ->orWhere('nis', $identifier)
+                    ->orWhere('nisn', $identifier)
                     ->orWhere('email', $identifier);
             })
             ->first();
     }
 
-    private function findStudentByProfile(?string $name, ?string $nis, ?string $class): ?User
+    private function findStudentByProfile(?string $name, ?string $nisn, ?string $class): ?User
     {
-        if (filled($nis)) {
-            return $this->findStudent($nis);
+        if (filled($nisn)) {
+            return $this->findStudent($nisn);
         }
 
         if (blank($name) || blank($class)) {

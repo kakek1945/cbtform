@@ -28,7 +28,7 @@
         </select>
         <input class="rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#0b2f57] focus:ring-4 focus:ring-sky-100" name="date" type="date" value="{{ request('date') }}">
         <button class="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0b2f57] px-5 py-3 font-bold text-white hover:bg-[#092846] md:col-span-3" type="submit">
-            <x-icon name="settings" class="size-5" />
+            <x-icon name="check" class="size-5" />
             Filter
         </button>
     </form>

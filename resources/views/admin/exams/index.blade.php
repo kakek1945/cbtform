@@ -26,6 +26,7 @@
                     <div class="min-w-0">
                         <p class="text-sm font-bold text-[#0b2f57]">{{ $exam->subject }} / {{ $exam->getAttribute('class') }}</p>
                         <h2 class="mt-1 truncate text-xl font-bold text-slate-900">{{ $exam->title }}</h2>
+                        <p class="mt-2 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-slate-600">Kode: {{ $exam->code ?? '-' }}</p>
                         <p class="mt-2 text-sm leading-6 text-slate-500">
                             {{ $exam->start_time->format('d M Y H:i') }} - {{ $exam->end_time->format('d M Y H:i') }}<br>
                             {{ $exam->participants_count }} peserta
@@ -35,7 +36,7 @@
                 </div>
                 <div class="mt-5 flex flex-wrap gap-3">
                     <a class="inline-flex items-center gap-2 rounded-2xl bg-sky-50 px-4 py-2 font-bold text-[#0b2f57] hover:bg-sky-100" href="{{ route('admin.exams.edit', $exam) }}">
-                        <x-icon name="settings" class="size-4" />
+                        <x-icon name="edit" class="size-4" />
                         Edit
                     </a>
                     <form method="POST" action="{{ route('admin.exams.destroy', $exam) }}" onsubmit="return confirm('Hapus ujian ini?')">
