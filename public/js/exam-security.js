@@ -2,6 +2,7 @@
     const timer = document.getElementById('exam-timer');
     const warning = document.getElementById('exam-warning');
     const formWrapper = document.getElementById('form-wrapper');
+    const googleFormFrame = document.getElementById('google-form-frame');
     const submissionModal = document.getElementById('submission-modal');
     const returnDashboardButton = document.getElementById('return-dashboard-button');
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -14,6 +15,9 @@
     let finished = false;
     let statusInterval = null;
     let timerInterval = null;
+    let formFrameLoaded = false;
+    let formSubmitDetectionArmed = false;
+    let formFrameFocused = false;
 
     function showWarning(message) {
         if (!warning) {
@@ -77,11 +81,23 @@
         }
     }
 
-    function showSubmittedModal(message) {
+    async function finishAfterFormSubmission(message) {
         if (finished) {
             return;
         }
 
+        finished = true;
+
+        try {
+            await post(timer.dataset.finishUrl);
+        } catch (error) {
+            // The popup still gives the student a safe way back if the network request fails.
+        }
+
+        showSubmittedModal(message);
+    }
+
+    function showSubmittedModal(message) {
         finished = true;
         window.clearInterval(statusInterval);
         window.clearInterval(timerInterval);
@@ -114,6 +130,27 @@
             // Keep the student focused on the form if status polling is temporarily unavailable.
         }
     }
+
+    googleFormFrame?.addEventListener('load', () => {
+        if (!formFrameLoaded) {
+            formFrameLoaded = true;
+            window.setTimeout(() => {
+                formSubmitDetectionArmed = true;
+            }, 8000);
+
+            return;
+        }
+
+        if (formSubmitDetectionArmed && formFrameFocused) {
+            finishAfterFormSubmission('Jawaban Google Form sudah dikirim. Silakan kembali ke dashboard siswa.');
+        }
+    });
+
+    window.addEventListener('blur', () => {
+        if (document.activeElement === googleFormFrame) {
+            formFrameFocused = true;
+        }
+    });
 
     function tick() {
         const remaining = Math.ceil((expiresAt - Date.now()) / 1000);

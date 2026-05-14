@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 #[Fillable([
     'title',
@@ -103,9 +105,13 @@ class Exam extends Model
 
     public function prefilledUrlFor(User $student): string
     {
+        $usernameField = filled($this->prefill_username_field)
+            ? $this->prefill_username_field
+            : $this->detectGoogleFormUsernameField();
+
         $params = array_filter([
             $this->prefill_name_field => $student->name,
-            $this->prefill_username_field => $student->username,
+            $usernameField => $student->username,
             $this->prefill_nisn_field => $student->nisn,
             $this->prefill_class_field => $student->getAttribute('class'),
             $this->prefill_exam_field => $this->title,
@@ -115,7 +121,7 @@ class Exam extends Model
             return $this->google_form_url;
         }
 
-        return $this->urlWithPrefilledParams($this->google_form_url, $params);
+        return $this->urlWithPrefilledParams($this->resolvedGoogleFormUrl(), $params);
     }
 
     private function urlWithPrefilledParams(string $url, array $params): string
@@ -162,5 +168,45 @@ class Exam extends Model
         return collect($query)
             ->map(fn ($value, $key) => rawurlencode((string) $key).'='.rawurlencode((string) $value))
             ->implode('&');
+    }
+
+    private function detectGoogleFormUsernameField(): ?string
+    {
+        if (blank($this->google_form_url)) {
+            return null;
+        }
+
+        return Cache::remember('google-form-username-field:'.sha1($this->google_form_url), now()->addDay(), function (): ?string {
+            try {
+                $html = Http::timeout(15)->get($this->google_form_url)->body();
+            } catch (\Throwable) {
+                return null;
+            }
+
+            $decoded = html_entity_decode($html, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+            if (preg_match('/%\.\@\.\[\d+,\s*"([^"]*(?:username|nama pengguna)[^"]*)".*?\[\[(\d+),/is', $decoded, $matches)) {
+                return 'entry.'.$matches[2];
+            }
+
+            return null;
+        });
+    }
+
+    private function resolvedGoogleFormUrl(): string
+    {
+        if (! str_contains($this->google_form_url, 'forms.gle')) {
+            return $this->google_form_url;
+        }
+
+        return Cache::remember('google-form-resolved-url:'.sha1($this->google_form_url), now()->addDay(), function (): string {
+            try {
+                $response = Http::timeout(15)->get($this->google_form_url);
+
+                return (string) $response->effectiveUri();
+            } catch (\Throwable) {
+                return $this->google_form_url;
+            }
+        });
     }
 }

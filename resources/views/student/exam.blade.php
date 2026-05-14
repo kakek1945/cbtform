@@ -33,7 +33,7 @@
         </div>
 
         <div id="form-wrapper" class="h-screen w-screen overflow-hidden bg-white">
-            <iframe class="h-screen w-screen border-0" src="{{ $formUrl }}" title="Google Form Ujian" loading="eager">
+            <iframe id="google-form-frame" class="h-screen w-screen border-0" src="{{ $formUrl }}" title="Google Form Ujian" loading="eager">
                 Memuat Google Form...
             </iframe>
         </div>
