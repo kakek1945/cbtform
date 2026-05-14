@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
 #[Fillable([
@@ -116,8 +115,52 @@ class Exam extends Model
             return $this->google_form_url;
         }
 
-        $separator = str_contains($this->google_form_url, '?') ? '&' : '?';
+        return $this->urlWithPrefilledParams($this->google_form_url, $params);
+    }
 
-        return $this->google_form_url.$separator.Arr::query($params);
+    private function urlWithPrefilledParams(string $url, array $params): string
+    {
+        $fragment = '';
+
+        if (str_contains($url, '#')) {
+            [$url, $fragment] = explode('#', $url, 2);
+            $fragment = '#'.$fragment;
+        }
+
+        [$baseUrl, $queryString] = array_pad(explode('?', $url, 2), 2, '');
+        $query = $this->parseQueryString($queryString);
+
+        foreach ($params as $key => $value) {
+            $query[$key] = $value;
+        }
+
+        return $baseUrl.'?'.$this->buildQueryString($query).$fragment;
+    }
+
+    private function parseQueryString(string $queryString): array
+    {
+        if ($queryString === '') {
+            return [];
+        }
+
+        $query = [];
+
+        foreach (explode('&', $queryString) as $part) {
+            if ($part === '') {
+                continue;
+            }
+
+            [$key, $value] = array_pad(explode('=', $part, 2), 2, '');
+            $query[urldecode($key)] = urldecode($value);
+        }
+
+        return $query;
+    }
+
+    private function buildQueryString(array $query): string
+    {
+        return collect($query)
+            ->map(fn ($value, $key) => rawurlencode((string) $key).'='.rawurlencode((string) $value))
+            ->implode('&');
     }
 }

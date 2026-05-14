@@ -111,29 +111,30 @@ https://docs.google.com/forms/d/e/FORM_ID/viewform?embedded=true
 
 Secara default, akses ujian cukup dikontrol dari import peserta ujian. Siswa yang tidak masuk daftar peserta tidak dapat melihat atau mengerjakan ujian.
 
-Prefilled Google Form hanya diperlukan jika sekolah ingin kolom Google Form seperti nama, NIS, kelas, dan nama ujian terisi otomatis dari data login siswa. Jika tidak diperlukan, biarkan field prefill kosong dan gunakan template upload peserta saja.
+Prefilled Google Form hanya diperlukan jika sekolah ingin kolom Google Form seperti nama, username, NISN, kelas, dan nama ujian terisi otomatis dari data login siswa. Untuk mencegah salah tulis username, isi `Field Username Google Form` di form admin dengan parameter `entry.xxxxx` milik pertanyaan username.
 
 Jika suatu saat ingin mengaktifkan prefill:
 
 1. Buka Google Form.
 2. Klik menu titik tiga.
 3. Pilih `Get pre-filled link`.
-4. Isi contoh jawaban untuk field nama, NIS, kelas, dan nama ujian.
+4. Isi contoh jawaban untuk field nama, username, NISN, kelas, dan nama ujian.
 5. Klik `Get link`.
 6. Dari URL hasil, ambil parameter seperti `entry.111111`, `entry.222222`, dan seterusnya.
 7. Simpan parameter tersebut di kolom prefill ujian melalui database atau form admin lanjutan.
 
 ```text
-prefill_name_field  = entry.111111
-prefill_nis_field   = entry.222222
-prefill_class_field = entry.333333
-prefill_exam_field  = entry.444444
+prefill_name_field     = entry.111111
+prefill_username_field = entry.555555
+prefill_nisn_field     = entry.222222
+prefill_class_field    = entry.333333
+prefill_exam_field     = entry.444444
 ```
 
 Aplikasi akan membuat URL final otomatis dari data siswa:
 
 ```text
-google_form_url?entry.111111=Nama&entry.222222=NIS&entry.333333=Kelas&entry.444444=Nama%20Ujian
+google_form_url?entry.111111=Nama&entry.555555=username&entry.222222=NISN&entry.333333=Kelas&entry.444444=Nama%20Ujian
 ```
 
 ## Import Peserta Ujian Per Mapel/Ujian
