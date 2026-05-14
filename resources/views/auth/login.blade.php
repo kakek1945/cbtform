@@ -13,7 +13,8 @@
                 <x-app-logo class="size-full object-contain" alt="Logo Sekolah" />
             </div>
 
-            <h1 class="mt-4 text-xl font-semibold tracking-tight text-[#24292f]">CBT</h1>
+            <h1 class="mt-4 text-xl font-semibold tracking-tight text-[#24292f]">{{ config('app.school_name') }}</h1>
+            <p class="mt-1 text-sm font-medium text-[#57606a]">CBT Online</p>
 
             <label class="mt-5 block text-left">
                 <span class="text-sm font-medium text-[#24292f]">Username</span>

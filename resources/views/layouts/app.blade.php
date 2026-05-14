@@ -45,7 +45,7 @@
                             <x-app-logo class="size-full object-contain" alt="Logo CBT" />
                         </span>
                         <span class="min-w-0">
-                            <span class="block text-xs font-semibold uppercase tracking-[.14em] text-[#d0d7de]">Form CBT</span>
+                            <span class="block truncate text-xs font-semibold uppercase tracking-[.14em] text-[#d0d7de]">{{ config('app.school_name') }}</span>
                             <span class="block truncate text-base font-semibold text-white">@yield('title', 'Form CBT')</span>
                         </span>
                     </a>
