@@ -10,7 +10,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('exams', function (Blueprint $table) {
-            $table->string('code')->nullable()->unique()->after('title');
+            $table->string('code')->nullable();
         });
 
         DB::table('exams')
@@ -22,6 +22,10 @@ return new class extends Migration
                     ->where('id', $exam->id)
                     ->update(['code' => 'UJIAN-'.$exam->id]);
             });
+
+        Schema::table('exams', function (Blueprint $table) {
+            $table->unique('code');
+        });
     }
 
     public function down(): void
