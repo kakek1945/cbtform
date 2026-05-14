@@ -17,6 +17,8 @@ return [
 
     'school_name' => env('SCHOOL_NAME', 'Nama Sekolah'),
 
+    'school_logo' => env('SCHOOL_LOGO', 'https://i.ibb.co.com/CKDDdxHY/Chat-GPT-Image-12-Mei-2026-22-09-47.png'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

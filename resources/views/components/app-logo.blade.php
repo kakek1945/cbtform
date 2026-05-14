@@ -1,9 +1,16 @@
 @props(['class' => 'size-full', 'alt' => 'Logo CBT'])
 
+@php
+    $logo = config('app.school_logo');
+    $logoUrl = str_starts_with($logo, 'http://') || str_starts_with($logo, 'https://') || str_starts_with($logo, '/')
+        ? $logo
+        : asset($logo);
+@endphp
+
 <img
     {{ $attributes->merge([
         'class' => $class,
-        'src' => 'https://i.ibb.co.com/CKDDdxHY/Chat-GPT-Image-12-Mei-2026-22-09-47.png',
+        'src' => $logoUrl,
         'alt' => $alt,
         'referrerpolicy' => 'no-referrer',
     ]) }}
