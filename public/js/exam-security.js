@@ -90,16 +90,13 @@
             formWrapper.classList.add('hidden');
         }
 
-        showWarning(message || 'Jawaban sudah terkirim. Sistem sedang mengarahkan ke dashboard.');
+        showWarning(message || 'Jawaban sudah terkirim. Silakan kembali ke dashboard siswa.');
 
         if (submissionModal) {
             submissionModal.classList.remove('hidden');
             submissionModal.classList.add('flex');
         }
 
-        window.setTimeout(() => {
-            window.location.href = timer.dataset.dashboardUrl;
-        }, 1200);
     }
 
     async function checkSubmissionStatus() {
