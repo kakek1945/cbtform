@@ -19,30 +19,30 @@
         </a>
     </div>
 
-    <div class="grid gap-4 md:grid-cols-2">
+    <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         @forelse ($exams as $exam)
-            <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-sky-200 hover:shadow-md">
-                <div class="flex items-start justify-between gap-4">
+            <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-sky-200 hover:shadow-md">
+                <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <p class="text-sm font-bold text-[#0b2f57]">{{ $exam->subject }} / {{ $exam->getAttribute('class') }}</p>
-                        <h2 class="mt-1 truncate text-xl font-bold text-slate-900">{{ $exam->title }}</h2>
-                        <p class="mt-2 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-slate-600">Kode: {{ $exam->code ?? '-' }}</p>
-                        <p class="mt-2 text-sm leading-6 text-slate-500">
+                        <p class="truncate text-xs font-bold text-[#0b2f57]">{{ $exam->subject }} / {{ $exam->getAttribute('class') }}</p>
+                        <h2 class="mt-1 truncate text-base font-bold text-slate-900">{{ $exam->title }}</h2>
+                        <p class="mt-2 inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-slate-600">Kode: {{ $exam->code ?? '-' }}</p>
+                        <p class="mt-2 text-xs leading-5 text-slate-500">
                             {{ $exam->start_time->format('d M Y H:i') }} - {{ $exam->end_time->format('d M Y H:i') }}<br>
                             {{ $exam->participants_count }} peserta
                         </p>
                     </div>
-                    <span class="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide {{ $exam->is_active ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100' : 'bg-slate-100 text-slate-500' }}">{{ $exam->is_active ? 'Aktif' : 'Nonaktif' }}</span>
+                    <span class="shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide {{ $exam->is_active ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100' : 'bg-slate-100 text-slate-500' }}">{{ $exam->is_active ? 'Aktif' : 'Nonaktif' }}</span>
                 </div>
-                <div class="mt-5 flex flex-wrap gap-3">
-                    <a class="inline-flex items-center gap-2 rounded-2xl bg-sky-50 px-4 py-2 font-bold text-[#0b2f57] hover:bg-sky-100" href="{{ route('admin.exams.edit', $exam) }}">
-                        <x-icon name="edit" class="size-4" />
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <a class="inline-flex items-center gap-1.5 rounded-xl bg-sky-50 px-3 py-1.5 text-xs font-bold text-[#0b2f57] hover:bg-sky-100" href="{{ route('admin.exams.edit', $exam) }}">
+                        <x-icon name="edit" class="size-3.5" />
                         Edit
                     </a>
                     <form method="POST" action="{{ route('admin.exams.destroy', $exam) }}" onsubmit="return confirm('Hapus ujian ini?')">
                         @csrf
                         @method('DELETE')
-                        <button class="rounded-2xl bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700" type="submit">Hapus</button>
+                        <button class="rounded-xl bg-red-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-red-700" type="submit">Hapus</button>
                     </form>
                 </div>
             </article>
