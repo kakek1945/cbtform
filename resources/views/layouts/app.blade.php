@@ -46,6 +46,11 @@
                         <span class="hidden rounded-full border border-white/15 px-3 py-1 text-sm font-medium text-[#d0d7de] sm:inline-flex">
                             {{ auth()->user()->name }} / {{ $isAdmin ? 'Administrator' : 'Peserta' }}
                         </span>
+                        @if ($isAdmin)
+                            <a class="inline-flex min-h-8 items-center justify-center gap-2 rounded-md border border-white/15 bg-transparent px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/10" href="{{ route('admin.password.edit') }}">
+                                Ubah Password
+                            </a>
+                        @endif
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button class="inline-flex min-h-8 items-center justify-center gap-2 rounded-md border border-white/15 bg-transparent px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/10" type="submit">

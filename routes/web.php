@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminExamController;
 use App\Http\Controllers\AdminExamResultController;
 use App\Http\Controllers\AdminMonitoringController;
+use App\Http\Controllers\AdminPasswordController;
 use App\Http\Controllers\AdminStudentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ExamController;
@@ -36,6 +37,8 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', AdminDashboardController::class)->name('dashboard');
+        Route::get('/password', [AdminPasswordController::class, 'edit'])->name('password.edit');
+        Route::put('/password', [AdminPasswordController::class, 'update'])->name('password.update');
         Route::get('/students/template', [AdminStudentController::class, 'downloadTemplate'])->name('students.template');
         Route::resource('/students', AdminStudentController::class);
         Route::post('/students/{student}/reset-password', [AdminStudentController::class, 'resetPassword'])->name('students.reset-password');
