@@ -4,7 +4,8 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-$tmp = sys_get_temp_dir().'/form-cbt';
+$release = preg_replace('/[^A-Za-z0-9_-]/', '', $_ENV['VERCEL_GIT_COMMIT_SHA'] ?? 'local') ?: 'local';
+$tmp = sys_get_temp_dir().'/form-cbt/'.$release;
 
 foreach ([
     $tmp.'/storage/framework/cache',
