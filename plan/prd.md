@@ -2,33 +2,70 @@
 
 ## Ringkasan
 
-Aplikasi CBT berbasis Laravel untuk pelaksanaan ujian sekolah menggunakan Google Form sebagai media pengerjaan soal. Sistem memiliki dua role utama, yaitu admin dan siswa. Admin membuat data ujian terlebih dahulu, kemudian mengimport data siswa menggunakan template CSV yang berisi kode ujian agar siswa otomatis terdaftar ke ujian yang sesuai.
+Aplikasi CBT sekolah berbasis Laravel, Blade, Tailwind CSS, dan Google Form. Aplikasi menyediakan portal admin untuk mengelola ujian, siswa, peserta, monitoring sesi, log aktivitas, dan hasil ujian dari Google Sheets. Siswa mengerjakan soal melalui Google Form yang ditampilkan dalam iframe, sementara aplikasi mengatur akses, timer, sesi ujian, peringatan submit, dan sinkronisasi nilai.
 
-## Tujuan
+## Tujuan Produk
 
-- Menyediakan platform CBT sederhana untuk sekolah dengan integrasi Google Form.
-- Memastikan hanya siswa yang terdaftar sebagai peserta ujian yang dapat melihat dan mengerjakan ujian.
-- Memudahkan admin mengelola ujian, siswa, peserta ujian, monitoring, log aktivitas, dan hasil ujian.
-- Mengurangi proses manual pendaftaran peserta ujian melalui penggunaan `kode_ujian` pada template import siswa.
+- Menyediakan platform CBT ringan untuk sekolah tanpa membangun editor soal sendiri.
+- Memastikan siswa hanya melihat ujian yang memang didaftarkan sebagai peserta.
+- Mengurangi kesalahan identitas siswa dengan prefilled username pada Google Form.
+- Memberi admin kontrol terhadap data ujian, data siswa, sesi ujian, log aktivitas, dan hasil nilai.
+- Membantu siswa mengingat bahwa nilai hanya masuk jika Google Form sudah dikirim.
 
 ## Pengguna
 
 - Admin sekolah atau operator CBT.
 - Siswa peserta ujian.
 
-## Alur Utama
+## Role dan Hak Akses
 
-1. Admin login ke dashboard admin.
-2. Admin membuat data ujian terlebih dahulu melalui menu `Ujian`.
-3. Admin mengisi `Kode Ujian` pada setiap ujian.
-4. Admin masuk ke menu `Siswa`.
-5. Admin download template CSV siswa.
-6. Admin mengisi data siswa dan kolom `kode_ujian`.
-7. Jika siswa mengikuti lebih dari satu ujian, kode ditulis dalam satu kolom dan dipisahkan dengan titik koma, contoh `MTK-XII;BINDO-XII`.
-8. Admin import CSV siswa.
-9. Sistem membuat atau memperbarui akun siswa berdasarkan `username`.
-10. Sistem otomatis mendaftarkan siswa ke semua ujian yang kode ujiannya cocok.
-11. Siswa login dan hanya melihat ujian yang sudah didaftarkan untuk dirinya.
+### Admin
+
+- Login ke dashboard admin.
+- Mengelola ujian.
+- Mengelola siswa.
+- Import siswa dan pendaftaran peserta ujian via CSV.
+- Melihat monitoring sesi ujian.
+- Reset sesi ujian.
+- Melihat log aktivitas.
+- Sinkronisasi dan download hasil ujian.
+- Menghapus hasil nilai.
+
+### Siswa
+
+- Login ke dashboard siswa.
+- Melihat ujian yang didaftarkan untuk dirinya.
+- Membaca instruksi ujian.
+- Memulai atau melanjutkan sesi ujian.
+- Mengerjakan Google Form dalam iframe.
+- Kembali ke dashboard setelah jawaban Google Form terdeteksi terkirim.
+
+## Alur Utama Admin
+
+1. Admin login.
+2. Admin membuat ujian melalui menu `Ujian`.
+3. Admin mengisi data ujian, termasuk `Kode Ujian`, Google Form URL, jadwal, durasi, instruksi, dan konfigurasi hasil.
+4. Jika ingin username otomatis terisi di Google Form, admin mengisi `Field Username Google Form` dengan parameter `entry.xxxxx` dari pre-filled link Google Form.
+5. Admin dapat memakai short URL `forms.gle`; aplikasi akan mencoba resolve ke URL asli Google Form saat membuat prefilled URL.
+6. Admin mengelola siswa melalui menu `Siswa`.
+7. Admin dapat import CSV siswa dengan kolom `kode_ujian`.
+8. Sistem membuat atau memperbarui akun siswa berdasarkan `username`.
+9. Sistem mendaftarkan siswa ke ujian yang kode ujiannya cocok.
+10. Admin memantau sesi ujian melalui menu `Monitoring`.
+11. Admin menyinkronkan hasil dari Google Sheets melalui menu `Hasil Ujian`.
+
+## Alur Utama Siswa
+
+1. Siswa login menggunakan username, NISN, atau email dan password/token.
+2. Siswa melihat daftar ujian yang didaftarkan untuk dirinya.
+3. Siswa membuka instruksi ujian.
+4. Siswa mencentang persetujuan instruksi.
+5. Sistem membuat atau melanjutkan sesi ujian.
+6. Siswa mengerjakan soal pada Google Form di iframe.
+7. Aplikasi mengisi username ke Google Form jika parameter prefill tersedia atau bisa dideteksi.
+8. Saat sisa waktu 3 menit, aplikasi menampilkan popup peringatan besar agar siswa segera klik `Kirim` di Google Form.
+9. Setelah Google Form terkirim, aplikasi menampilkan popup `Kembali ke Dashboard Siswa`.
+10. Jika waktu habis sebelum siswa klik `Kirim` di Google Form, sesi berubah menjadi `waktu_habis`, tetapi nilai tidak masuk karena Google Form belum menyimpan jawaban.
 
 ## Scope
 
@@ -37,26 +74,34 @@ Aplikasi CBT berbasis Laravel untuk pelaksanaan ujian sekolah menggunakan Google
 - Authentication berbasis session.
 - Role `admin` dan `siswa`.
 - Dashboard admin.
-- Manajemen ujian.
-- Manajemen siswa.
-- Import siswa dari CSV dengan `kode_ujian`.
+- Dashboard siswa.
+- CRUD ujian.
+- CRUD siswa.
+- Reset password/token siswa.
+- Import siswa dari CSV.
 - Pendaftaran peserta ujian otomatis berdasarkan `kode_ujian`.
-- Dashboard siswa berisi daftar ujian yang dapat diakses.
 - Halaman instruksi ujian.
 - Halaman ujian dengan iframe Google Form.
+- Prefilled Google Form untuk username dan field opsional lain.
 - Timer ujian berbasis sesi.
+- Popup peringatan submit saat sisa waktu 3 menit.
+- Popup kembali dashboard setelah submit Google Form terdeteksi.
+- Pencatatan pindah tab dan aktivitas penting.
 - Monitoring sesi ujian.
-- Reset sesi ujian oleh admin.
+- Reset sesi oleh admin.
 - Log aktivitas.
-- Sinkronisasi hasil ujian dari Google Sheets.
+- Sinkronisasi hasil dari Google Sheets.
+- Download hasil CSV.
+- Hapus nilai pada daftar hasil ujian.
 
 ### Out of Scope
 
 - Pembuatan soal langsung di aplikasi.
-- Koreksi jawaban langsung di aplikasi selain sinkron hasil Google Sheets.
-- Proctoring kamera atau screen recording.
-- Integrasi SSO eksternal.
-- Import peserta ujian dari halaman edit ujian.
+- Penyimpanan jawaban sementara dari Google Form.
+- Auto-submit Google Form saat waktu habis.
+- Koreksi jawaban selain hasil yang tersedia di Google Sheets.
+- Proctoring kamera, screen recording, atau lockdown browser penuh.
+- SSO eksternal.
 
 ## Kebutuhan Fungsional
 
@@ -64,76 +109,91 @@ Aplikasi CBT berbasis Laravel untuk pelaksanaan ujian sekolah menggunakan Google
 
 - Admin dapat login menggunakan username atau email dan password.
 - Siswa dapat login menggunakan username, NISN, atau email dan password/token.
-- Sistem membatasi akses berdasarkan role.
-- Admin tidak dapat mengakses halaman siswa.
+- Sistem membatasi halaman berdasarkan role.
+- Admin tidak diarahkan ke halaman siswa.
 - Siswa tidak dapat mengakses halaman admin.
+- Logout tersedia dari topbar aplikasi.
 
 ### Dashboard Admin
 
-- Menampilkan ringkasan jumlah ujian, siswa, sesi aktif, selesai, dan waktu habis.
+- Menampilkan ringkasan data ujian, siswa, sesi aktif, selesai, dan waktu habis.
 - Menampilkan sesi ujian terbaru.
-- Header navigasi admin berurutan: `Dashboard`, `Ujian`, `Siswa`, `Monitoring`, `Hasil Ujian`, `Log`.
+- Navigasi admin meliputi `Dashboard`, `Ujian`, `Siswa`, `Monitoring`, `Hasil Ujian`, dan `Log`.
 
 ### Manajemen Ujian
 
 - Admin dapat membuat, mengedit, dan menghapus ujian.
-- Data ujian minimal berisi nama ujian, kode ujian, mata pelajaran, kelas, Google Form URL, waktu mulai, waktu selesai, durasi, status aktif, izin mengulang, dan instruksi.
-- `Kode Ujian` wajib diisi dan unik.
-- Kode ujian digunakan pada template import siswa untuk mendaftarkan peserta.
-- Halaman edit ujian tidak lagi memiliki fitur import peserta ujian.
+- Data ujian mencakup nama ujian, kode ujian, mata pelajaran, kelas, Google Form URL, spreadsheet hasil, nama sheet hasil, field prefill, waktu mulai, waktu selesai, durasi, status aktif, izin mengulang, tampilkan nilai, dan instruksi.
+- `Kode Ujian` wajib unik.
+- Google Form URL dapat berupa URL asli Google Form atau short URL `forms.gle`.
+- `Field Username Google Form` menyimpan parameter `entry.xxxxx` untuk pertanyaan username di Google Form.
+- Jika `Field Username Google Form` kosong, aplikasi mencoba mendeteksi field username dari HTML Google Form publik.
+- Daftar ujian ditampilkan sebagai kartu compact agar lebih banyak data terlihat dalam satu layar.
 
 ### Manajemen Siswa
 
 - Admin dapat menambah, mengedit, menghapus, dan reset password/token siswa.
-- Data siswa menggunakan NISN, bukan NIS.
+- Data siswa menggunakan NISN.
 - Template CSV siswa menggunakan header `nisn`.
-- Template CSV siswa minimal berisi `name`, `nisn`, `class`, `username`, `email`, `password`, dan `kode_ujian`.
-- Import siswa wajib memiliki kolom `username` dan `kode_ujian`.
-- Sistem tetap dapat membaca kolom lama `nis` sebagai fallback saat import, tetapi template resmi memakai `nisn`.
-- Kolom `kode_ujian` dapat berisi lebih dari satu kode ujian.
-- Pemisah kode ujian yang didukung: titik koma `;`, koma `,`, pipe `|`, atau baris baru.
-- Jika kode ujian tidak ditemukan, baris tersebut dilewati dan sistem menampilkan jumlah baris yang dilewati.
-- Tampilan master data siswa hanya menampilkan nama, NISN, username, dan daftar kode ujian yang diikuti.
-- Daftar ujian yang diikuti pada master siswa cukup menampilkan kode ujian saja.
+- Import CSV siswa mendukung data minimal `name`, `nisn`, `class`, `username`, `email`, `password`, dan `kode_ujian`.
+- Import memakai `username` sebagai kunci update.
+- Kolom `kode_ujian` dapat berisi lebih dari satu kode.
+- Pemisah kode yang didukung: titik koma `;`, koma `,`, pipe `|`, atau baris baru.
+- Jika kode ujian tidak ditemukan, baris terkait dilewati dan jumlahnya dilaporkan.
+- Master data siswa menampilkan identitas utama dan daftar kode ujian yang diikuti.
 
 ### Dashboard Siswa
 
 - Siswa melihat nama, NISN, kelas, dan daftar ujian yang didaftarkan untuk dirinya.
-- Ujian yang tampil bukan berdasarkan kelas saja, tetapi berdasarkan relasi peserta ujian.
-- Status ujian yang ditampilkan meliputi belum mulai, tersedia, berlangsung, selesai, dan waktu habis.
+- Ujian yang tampil berdasarkan relasi peserta, bukan hanya berdasarkan kelas.
+- Status ujian meliputi `belum_mulai`, `tersedia`, `berlangsung`, `selesai`, dan `waktu_habis`.
 - Tombol mulai ujian hanya aktif ketika ujian tersedia sesuai jadwal.
 
 ### Instruksi Ujian
 
-- Menampilkan detail ujian, durasi, jadwal, dan instruksi.
-- Siswa wajib mencentang persetujuan instruksi sebelum mulai.
-- Saat mulai, sistem membuat atau melanjutkan `exam_session`.
+- Menampilkan detail ujian, mapel, kelas, durasi, jadwal, dan instruksi.
+- Siswa wajib menyetujui instruksi sebelum mulai.
+- Sistem membuat sesi baru atau melanjutkan sesi yang belum selesai.
+- Jika ujian sudah selesai dan tidak boleh mengulang, siswa diarahkan ke halaman selesai.
 
 ### Halaman Ujian
 
-- Menampilkan Google Form melalui iframe.
-- Google Form URL diambil dari data ujian.
-- Sistem mendukung prefilled URL berdasarkan data siswa seperti nama, NISN, kelas, dan nama ujian.
+- Menampilkan Google Form dalam iframe layar penuh.
 - Timer dihitung dari `started_at + duration_minutes`.
-- Timer tetap akurat setelah halaman direfresh.
-- Jika waktu habis, status sesi berubah menjadi `waktu_habis`.
-- Siswa dapat klik tombol selesai untuk mengubah status sesi menjadi `selesai`.
+- Timer tetap akurat setelah refresh.
+- Sistem menampilkan peringatan kecil untuk aktivitas penting.
+- Saat sisa waktu 3 menit, sistem menampilkan popup besar yang mengingatkan siswa untuk klik `Kirim` di Google Form.
+- Saat waktu habis, sesi ditandai `waktu_habis` dan siswa diarahkan ke halaman selesai.
+- Saat Google Form submit terdeteksi, sesi ditandai `selesai` dan popup kembali dashboard ditampilkan.
+- Deteksi submit memakai sinkronisasi hasil Google Sheets dan fallback perubahan iframe Google Form.
+
+### Prefilled Google Form
+
+- Aplikasi dapat membuat URL prefilled dengan data siswa.
+- Field yang didukung: nama, username, NISN, kelas, dan nama ujian.
+- Username menjadi field prioritas untuk mencegah kesalahan penulisan identitas siswa.
+- Jika Google Form URL memakai `forms.gle`, aplikasi mencoba resolve ke URL asli sebelum menambahkan parameter `entry.xxxxx`.
+- Jika URL sudah memiliki parameter prefill lama, aplikasi mengganti nilai parameter tersebut dengan data siswa login agar tidak terjadi duplikasi nilai.
 
 ### Proteksi dan Monitoring
 
-- Sistem mencatat perpindahan tab.
-- Sistem mencatat keluar fullscreen.
-- Sistem mencatat login, mulai ujian, buka ujian, selesai ujian, waktu habis, reset sesi, dan aktivitas penting lain.
-- Admin dapat memantau sesi ujian berdasarkan status, ujian, atau tanggal.
-- Admin dapat reset sesi ujian siswa dari halaman monitoring.
+- Sistem mencatat siswa membuka halaman ujian.
+- Sistem mencatat siswa mulai ujian.
+- Sistem mencatat pindah tab atau aplikasi.
+- Sistem mencatat keluar fullscreen jika event dikirim.
+- Sistem mencatat selesai ujian, waktu habis, submit Google Form terdeteksi, reset sesi, sinkron hasil, download hasil, dan hapus nilai.
+- Admin dapat memfilter monitoring berdasarkan status, ujian, atau tanggal.
+- Admin dapat reset sesi ujian siswa.
 
 ### Hasil Ujian
 
-- Admin dapat memilih ujian dan melakukan sinkronisasi hasil dari Google Sheets.
-- Sistem membaca spreadsheet publik atau spreadsheet yang dapat diakses melalui link.
-- Sistem mencocokkan hasil dengan siswa berdasarkan username, NISN, email, atau profil siswa.
-- Sistem menyimpan hasil ke tabel hasil ujian.
-- Admin dapat melihat dan menghapus hasil ujian.
+- Admin dapat memilih ujian dan sinkronisasi hasil dari Google Sheets.
+- Spreadsheet hasil harus dapat dibaca oleh aplikasi, misalnya `Anyone with the link can view` atau sheet dipublish.
+- Sistem membaca sheet sebagai CSV dari endpoint Google Sheets.
+- Sistem mencocokkan hasil dengan siswa berdasarkan username, NISN, email, atau profil nama dan kelas.
+- Sistem menyimpan nilai, max score, persentase, waktu submit, dan payload mentah.
+- Admin dapat menghapus nilai apa pun dari daftar hasil.
+- Admin dapat download hasil ke CSV.
 
 ## Kebutuhan Data
 
@@ -157,6 +217,7 @@ Aplikasi CBT berbasis Laravel untuk pelaksanaan ujian sekolah menggunakan Google
 - `result_spreadsheet_id`
 - `result_sheet_name`
 - `prefill_name_field`
+- `prefill_username_field`
 - `prefill_nisn_field`
 - `prefill_class_field`
 - `prefill_exam_field`
@@ -165,6 +226,7 @@ Aplikasi CBT berbasis Laravel untuk pelaksanaan ujian sekolah menggunakan Google
 - `duration_minutes`
 - `is_active`
 - `allow_retake`
+- `show_score`
 - `instructions`
 
 ### Exam Participants
@@ -199,38 +261,56 @@ Aplikasi CBT berbasis Laravel untuk pelaksanaan ujian sekolah menggunakan Google
 - `imported_at`
 - `raw_payload`
 
+### Activity Logs
+
+- `user_id`
+- `exam_id`
+- `exam_session_id`
+- `action`
+- `description`
+- `ip_address`
+- `user_agent`
+- `created_at`
+
 ## Kebutuhan Non-Fungsional
 
-- Aplikasi harus berjalan di Laravel dengan Blade dan Tailwind CSS.
-- Database menggunakan PostgreSQL pada produksi dan dapat menggunakan konfigurasi test sesuai Laravel.
-- Import CSV harus mendukung delimiter koma, titik koma, dan tab.
-- UI harus tetap responsif pada desktop dan mobile.
-- Sistem harus menggunakan middleware role untuk membatasi akses.
-- Password harus disimpan menggunakan hashing Laravel.
-- Aktivitas penting harus tercatat untuk audit.
+- Aplikasi berjalan di Laravel dengan Blade dan Tailwind CSS.
+- Database produksi menggunakan PostgreSQL.
+- Import CSV mendukung delimiter koma, titik koma, dan tab.
+- UI responsif pada desktop dan mobile.
+- Middleware role wajib membatasi akses admin dan siswa.
+- Password disimpan dengan hashing Laravel.
+- Aktivitas penting tercatat untuk audit.
+- Tampilan tidak memakai mode gelap/terang; aplikasi memakai satu tema terang lembut.
+- Background utama memakai warna lembut agar tidak menyilaukan saat ujian.
 
 ## Kriteria Sukses
 
 - Admin dapat membuat ujian dengan kode unik.
-- Admin dapat mengimport siswa melalui template CSV dengan NISN dan kode ujian.
-- Siswa otomatis terdaftar ke semua ujian yang kodenya ditulis pada CSV.
-- Master data siswa hanya menampilkan nama, NISN, username, dan kode ujian yang diikuti.
-- Import peserta ujian tidak tersedia lagi di halaman edit ujian.
+- Admin dapat mengimport siswa melalui CSV dan mendaftarkan peserta berdasarkan kode ujian.
 - Siswa hanya melihat ujian yang didaftarkan untuk dirinya.
-- Timer ujian berjalan akurat walaupun halaman direfresh.
-- Admin dapat memonitor, reset sesi, dan sinkron hasil ujian.
+- Username siswa otomatis terisi di Google Form saat parameter username tersedia atau terdeteksi.
+- Popup peringatan 3 menit muncul sebelum waktu habis.
+- Popup kembali dashboard muncul setelah Google Form terkirim.
+- Timer tetap akurat setelah refresh.
+- Admin dapat memonitor dan reset sesi.
+- Admin dapat sinkron, download, dan hapus nilai ujian.
 
-## Risiko
+## Risiko dan Batasan
 
-- Kesalahan penulisan `kode_ujian` pada CSV menyebabkan siswa tidak terdaftar ke ujian.
-- Google Form atau Google Sheets yang tidak publik dapat gagal ditampilkan atau gagal disinkronkan.
-- Proteksi browser seperti fullscreen dan disable shortcut hanya bersifat dasar dan tidak setara proctoring penuh.
-- Data hasil Google Sheets perlu format kolom yang konsisten agar pencocokan siswa akurat.
+- Google Form tidak mengizinkan aplikasi mengambil jawaban yang belum dikirim.
+- Jika siswa tidak klik `Kirim` di Google Form sebelum waktu habis, nilai tidak masuk ke Google Sheets dan tidak bisa disinkronkan.
+- Deteksi otomatis field username bergantung pada struktur HTML Google Form dan akses publik form.
+- Google Form atau Google Sheets yang tidak dapat diakses dapat menggagalkan prefill otomatis atau sinkronisasi hasil.
+- Proteksi tab/fullscreen hanya proteksi dasar browser, bukan proctoring penuh.
+- Format header Google Sheets harus konsisten agar pencocokan siswa akurat.
 
-## Catatan Implementasi Terakhir
+## Catatan Implementasi Terbaru
 
-- Istilah NIS sudah diganti menjadi NISN pada database dan tampilan utama.
-- Template import siswa memakai `nisn`.
-- Import siswa menjadi satu-satunya alur pendaftaran peserta ujian.
-- Halaman edit ujian hanya digunakan untuk mengelola data ujian, bukan import peserta.
-- Ikon aksi sudah disesuaikan agar tidak memakai gear untuk aksi yang bukan setting.
+- Mode terang/gelap sudah dihapus; aplikasi memakai satu tema terang lembut.
+- Background utama dilembutkan ke warna abu-biru muda.
+- Kartu daftar ujian pada manajemen ujian dibuat lebih compact dan mendukung 3 kolom pada layar lebar.
+- Prefilled username Google Form diperkuat dengan resolve short URL `forms.gle` dan fallback deteksi field username.
+- URL prefill sekarang mengganti parameter lama agar tidak terjadi duplikasi `entry.xxxxx`.
+- Popup submit Google Form dan popup peringatan sisa 3 menit sudah tersedia pada halaman ujian.
+- Tombol hapus nilai tersedia pada semua baris daftar hasil ujian.
