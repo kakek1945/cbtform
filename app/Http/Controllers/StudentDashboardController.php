@@ -15,7 +15,10 @@ class StudentDashboardController extends Controller
         $exams = Exam::query()
             ->where('class', $student->getAttribute('class'))
             ->whereHas('participants', fn ($query) => $query->whereKey($student->id))
-            ->with(['sessions' => fn ($query) => $query->where('user_id', $student->id)])
+            ->with([
+                'sessions' => fn ($query) => $query->where('user_id', $student->id),
+                'results' => fn ($query) => $query->where('user_id', $student->id)->latest('submitted_at')->latest('id'),
+            ])
             ->withCount('participants')
             ->orderBy('start_time')
             ->get();

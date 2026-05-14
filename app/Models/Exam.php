@@ -27,6 +27,7 @@ use Illuminate\Support\Carbon;
     'duration_minutes',
     'is_active',
     'allow_retake',
+    'show_score',
     'instructions',
 ])]
 class Exam extends Model
@@ -38,6 +39,7 @@ class Exam extends Model
             'end_time' => 'datetime',
             'is_active' => 'boolean',
             'allow_retake' => 'boolean',
+            'show_score' => 'boolean',
         ];
     }
 

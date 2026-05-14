@@ -89,6 +89,7 @@ class AdminExamController extends Controller
 
         $validated['is_active'] = $request->boolean('is_active');
         $validated['allow_retake'] = $request->boolean('allow_retake');
+        $validated['show_score'] = $request->boolean('show_score');
 
         return $validated;
     }

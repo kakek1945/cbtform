@@ -11,6 +11,7 @@
             data-expires-at="{{ $session->expiresAt()->toIso8601String() }}"
             data-finish-url="{{ route('exam.session.finish', $session) }}"
             data-finished-url="{{ route('exam.session.finished', $session) }}"
+            data-dashboard-url="{{ route('dashboard') }}"
             data-submission-status-url="{{ route('exam.session.submission-status', $session) }}"
             data-logout-url="{{ route('logout') }}"
             data-login-url="{{ route('login') }}"
@@ -24,9 +25,9 @@
                     <x-icon name="check" class="size-7" />
                 </div>
                 <h2 class="mt-4 text-xl font-bold text-slate-950">Jawaban Terkirim</h2>
-                <p class="mt-2 text-sm leading-6 text-slate-600">Sistem sudah mendeteksi jawaban Google Form. Silakan kembali ke halaman login.</p>
-                <button id="return-login-button" class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-[#0969da] px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#0757b5]" type="button">
-                    Kembali ke Login
+                <p class="mt-2 text-sm leading-6 text-slate-600">Sistem sudah mendeteksi jawaban Google Form. Kamu akan diarahkan kembali ke dashboard.</p>
+                <button id="return-dashboard-button" class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-[#0969da] px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#0757b5]" type="button">
+                    Kembali ke Dashboard
                 </button>
             </div>
         </div>

@@ -124,7 +124,8 @@ class ExamSessionController extends Controller
 
         return response()->json([
             'submitted' => $submitted,
-            'message' => $submitted ? 'Jawaban sudah terkirim.' : null,
+            'message' => $submitted ? 'Jawaban sudah terkirim. Kamu akan diarahkan ke dashboard.' : null,
+            'dashboard_url' => route('dashboard'),
             'login_url' => route('login'),
             'logout_url' => route('logout'),
         ]);

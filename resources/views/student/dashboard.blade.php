@@ -51,6 +51,7 @@
             <div class="mt-5 grid gap-4">
                 @forelse ($exams as $exam)
                     @php($session = $exam->sessions->first())
+                    @php($result = $exam->results->first())
                     @php($status = $exam->statusFor($student, $session))
                     <article class="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-sky-200 hover:shadow-sm">
                         <div class="flex flex-col justify-between gap-4 md:flex-row md:items-center">
@@ -58,6 +59,21 @@
                                 <p class="text-sm font-bold text-[#0b2f57]">{{ $exam->subject }} / {{ $exam->getAttribute('class') }}</p>
                                 <h3 class="mt-1 truncate text-xl font-bold text-slate-900">{{ $exam->title }}</h3>
                                 <p class="mt-2 text-sm text-slate-500">{{ $exam->start_time->format('d M Y H:i') }} - {{ $exam->end_time->format('H:i') }} / {{ $exam->duration_minutes }} menit</p>
+                                @if ($exam->show_score && $result)
+                                    <div class="mt-3 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-700 ring-1 ring-emerald-100">
+                                        <x-icon name="report" class="size-4" />
+                                        @if($result->score !== null)
+                                            Nilai: {{ rtrim(rtrim(number_format((float) $result->score, 2, ',', '.'), '0'), ',') }}@if($result->max_score !== null)/{{ rtrim(rtrim(number_format((float) $result->max_score, 2, ',', '.'), '0'), ',') }}@endif
+                                            @if($result->percentage !== null)
+                                                ({{ rtrim(rtrim(number_format((float) $result->percentage, 2, ',', '.'), '0'), ',') }}%)
+                                            @endif
+                                        @else
+                                            Jawaban terkirim
+                                        @endif
+                                    </div>
+                                @elseif ($exam->show_score && $session?->isFinished())
+                                    <p class="mt-3 text-sm font-semibold text-slate-500">Nilai belum tersedia.</p>
+                                @endif
                             </div>
                             <div class="flex flex-wrap items-center gap-3">
                                 <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-slate-600">{{ str_replace('_', ' ', $status) }}</span>

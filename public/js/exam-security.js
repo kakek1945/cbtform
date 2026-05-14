@@ -3,7 +3,7 @@
     const warning = document.getElementById('exam-warning');
     const formWrapper = document.getElementById('form-wrapper');
     const submissionModal = document.getElementById('submission-modal');
-    const returnLoginButton = document.getElementById('return-login-button');
+    const returnDashboardButton = document.getElementById('return-dashboard-button');
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
 
     if (!timer || !csrf || !window.examSecurity) {
@@ -90,12 +90,16 @@
             formWrapper.classList.add('hidden');
         }
 
-        showWarning(message || 'Jawaban sudah terkirim. Silakan kembali ke halaman login.');
+        showWarning(message || 'Jawaban sudah terkirim. Sistem sedang mengarahkan ke dashboard.');
 
         if (submissionModal) {
             submissionModal.classList.remove('hidden');
             submissionModal.classList.add('flex');
         }
+
+        window.setTimeout(() => {
+            window.location.href = timer.dataset.dashboardUrl;
+        }, 1200);
     }
 
     async function checkSubmissionStatus() {
@@ -144,15 +148,10 @@
         }
     });
 
-    returnLoginButton?.addEventListener('click', async () => {
-        returnLoginButton.disabled = true;
-        returnLoginButton.textContent = 'Mengalihkan...';
-
-        try {
-            await post(timer.dataset.logoutUrl);
-        } finally {
-            window.location.href = timer.dataset.loginUrl;
-        }
+    returnDashboardButton?.addEventListener('click', () => {
+        returnDashboardButton.disabled = true;
+        returnDashboardButton.textContent = 'Mengalihkan...';
+        window.location.href = timer.dataset.dashboardUrl;
     });
 
     tick();

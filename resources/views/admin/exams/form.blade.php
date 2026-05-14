@@ -65,6 +65,10 @@
                 <input name="allow_retake" type="checkbox" value="1" @checked(old('allow_retake', $exam->allow_retake))>
                 <span class="font-semibold">Boleh mengulang</span>
             </label>
+            <label class="flex items-center gap-2 rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-100">
+                <input name="show_score" type="checkbox" value="1" @checked(old('show_score', $exam->show_score))>
+                <span class="font-semibold">Tampilkan nilai ke siswa</span>
+            </label>
         </div>
 
         <div class="mt-6 flex flex-wrap gap-3">
