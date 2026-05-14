@@ -5,18 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', config('app.name', 'Form CBT'))</title>
-    <script>
-        (() => {
-            const theme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-            document.documentElement.classList.toggle('dark', theme === 'dark' || (!theme && prefersDark));
-        })();
-    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
-<body class="github-theme min-h-screen bg-[#f6f8fa] text-[#24292f] antialiased">
+<body class="github-theme min-h-screen bg-[#eef2f6] text-[#24292f] antialiased">
     @php
         $isAdmin = auth()->check() && auth()->user()->isAdmin();
         $isWideContent = trim($__env->yieldContent('wideContent'));
@@ -36,7 +28,7 @@
             : [];
     @endphp
 
-    <div class="min-h-screen bg-[#f6f8fa]">
+    <div class="min-h-screen bg-[#eef2f6]">
         @auth
             <header class="topbar sticky top-0 z-30 bg-[#24292f] text-white">
                 <div class="topbar-inner mx-auto flex min-h-16 w-[min(1180px,calc(100%-1.5rem))] items-center justify-between gap-4 py-3">
@@ -101,33 +93,5 @@
     </div>
 
     @stack('scripts')
-    <script>
-        (() => {
-            const buttons = document.querySelectorAll('.theme-toggle');
-            const moonIcons = document.querySelectorAll('.theme-toggle-icon-moon');
-            const sunIcons = document.querySelectorAll('.theme-toggle-icon-sun');
-
-            const refreshTheme = () => {
-                const dark = document.documentElement.classList.contains('dark');
-
-                moonIcons.forEach((icon) => icon.classList.toggle('hidden', dark));
-                sunIcons.forEach((icon) => icon.classList.toggle('hidden', !dark));
-                buttons.forEach((button) => {
-                    button.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
-                    button.setAttribute('title', dark ? 'Light mode' : 'Dark mode');
-                });
-            };
-
-            buttons.forEach((button) => {
-                button.addEventListener('click', () => {
-                    const dark = document.documentElement.classList.toggle('dark');
-                    localStorage.setItem('theme', dark ? 'dark' : 'light');
-                    refreshTheme();
-                });
-            });
-
-            refreshTheme();
-        })();
-    </script>
 </body>
 </html>

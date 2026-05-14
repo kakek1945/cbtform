@@ -3,13 +3,11 @@
 @section('title', 'Masuk CBT')
 
 @section('content')
-    <section class="-mx-3 -my-6 flex min-h-screen items-center justify-center bg-[#f6f8fa] px-4 py-8 sm:-mx-4 lg:-mx-8">
-        <x-theme-toggle class="fixed right-4 top-4 z-50" />
-
+    <section class="-mx-3 -my-6 flex min-h-screen items-center justify-center bg-[#eef2f6] px-4 py-8 sm:-mx-4 lg:-mx-8">
         <form class="w-full max-w-sm rounded-xl border border-[#d0d7de] bg-white p-6 text-center shadow-sm" method="POST" action="{{ route('login.store') }}">
             @csrf
 
-            <div class="mx-auto flex size-20 items-center justify-center rounded-xl border border-[#d0d7de] bg-[#f6f8fa] p-2">
+            <div class="mx-auto flex size-20 items-center justify-center rounded-xl border border-[#d0d7de] bg-[#eef2f6] p-2">
                 <x-app-logo class="size-full object-contain" alt="Logo Sekolah" />
             </div>
 
