@@ -3,6 +3,8 @@
     const warning = document.getElementById('exam-warning');
     const formWrapper = document.getElementById('form-wrapper');
     const googleFormFrame = document.getElementById('google-form-frame');
+    const timeWarningModal = document.getElementById('time-warning-modal');
+    const closeTimeWarningButton = document.getElementById('close-time-warning-button');
     const submissionModal = document.getElementById('submission-modal');
     const returnDashboardButton = document.getElementById('return-dashboard-button');
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -18,6 +20,7 @@
     let formFrameLoaded = false;
     let formSubmitDetectionArmed = false;
     let formFrameFocused = false;
+    let timeWarningShown = false;
 
     function showWarning(message) {
         if (!warning) {
@@ -102,6 +105,8 @@
         window.clearInterval(statusInterval);
         window.clearInterval(timerInterval);
 
+        hideTimeWarningModal();
+
         if (formWrapper) {
             formWrapper.classList.add('hidden');
         }
@@ -113,6 +118,25 @@
             submissionModal.classList.add('flex');
         }
 
+    }
+
+    function showTimeWarningModal() {
+        if (!timeWarningModal) {
+            showWarning('Sisa waktu 3 menit. Segera tekan tombol Kirim di Google Form agar nilai masuk.');
+            return;
+        }
+
+        timeWarningModal.classList.remove('hidden');
+        timeWarningModal.classList.add('flex');
+    }
+
+    function hideTimeWarningModal() {
+        if (!timeWarningModal) {
+            return;
+        }
+
+        timeWarningModal.classList.add('hidden');
+        timeWarningModal.classList.remove('flex');
     }
 
     async function checkSubmissionStatus() {
@@ -158,6 +182,12 @@
         timer.classList.toggle('bg-amber-600', remaining <= 300 && remaining > 60);
         timer.classList.toggle('bg-red-700', remaining <= 60);
 
+        if (!timeWarningShown && remaining <= 180 && remaining > 0) {
+            timeWarningShown = true;
+            showTimeWarningModal();
+            showWarning('Sisa waktu 3 menit. Segera tekan Kirim di Google Form agar nilai masuk.');
+        }
+
         if (remaining <= 0) {
             finishByTimeout();
         }
@@ -187,6 +217,8 @@
         returnDashboardButton.textContent = 'Mengalihkan...';
         window.location.href = timer.dataset.dashboardUrl;
     });
+
+    closeTimeWarningButton?.addEventListener('click', hideTimeWarningModal);
 
     tick();
     timerInterval = window.setInterval(tick, 1000);
