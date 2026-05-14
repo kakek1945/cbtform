@@ -28,7 +28,7 @@
             </div>
         </form>
 
-        <form class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" method="POST" action="{{ route('admin.students.import-csv') }}" enctype="multipart/form-data">
+        <form class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" method="POST" action="{{ route('admin.students.import-csv') }}" enctype="multipart/form-data" onsubmit="return confirm('Import CSV akan menghapus permanen semua siswa lama dan menggantinya dengan data terbaru. Lanjutkan?')">
             @csrf
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <label class="text-sm font-semibold text-slate-700" for="student-file">Import CSV Siswa</label>
@@ -41,7 +41,7 @@
                     Import
                 </button>
             </div>
-            <p class="mt-2 text-xs text-slate-500">Buat ujian terlebih dahulu, lalu isi kolom <code>kode_ujian</code>. Untuk lebih dari satu ujian, pisahkan kode dengan titik koma, contoh <code>MTK-XII;BINDO-XII</code>.</p>
+            <p class="mt-2 text-xs text-slate-500">Import akan menghapus permanen semua siswa lama. Buat ujian terlebih dahulu, lalu isi kolom <code>kode_ujian</code>. Untuk lebih dari satu ujian, pisahkan kode dengan titik koma, contoh <code>MTK-XII;BINDO-XII</code>.</p>
         </form>
     </div>
 

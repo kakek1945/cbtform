@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -124,65 +125,86 @@ class AdminStudentController extends Controller
         $registered = 0;
         $skipped = 0;
         $header = null;
+        $deleted = 0;
 
         foreach ($rows as $row) {
             if (! is_array($row) || count(array_filter($row, fn ($value) => filled($value))) === 0) {
                 continue;
             }
 
-            if ($header === null) {
-                $header = array_map(fn ($value) => $this->normalizeCsvHeader((string) $value), $row);
+            $header = array_map(fn ($value) => $this->normalizeCsvHeader((string) $value), $row);
+            $hasExamCode = in_array('kode_ujian', $header, true) || in_array('exam_code', $header, true);
 
-                $hasExamCode = in_array('kode_ujian', $header, true) || in_array('exam_code', $header, true);
-
-                if (! in_array('username', $header, true) || ! $hasExamCode) {
-                    return back()->withErrors([
-                        'file' => 'Header CSV wajib memiliki kolom username dan kode_ujian. Gunakan template CSV siswa terbaru.',
-                    ]);
-                }
-
-                continue;
+            if (! in_array('username', $header, true) || ! $hasExamCode) {
+                return back()->withErrors([
+                    'file' => 'Header CSV wajib memiliki kolom username dan kode_ujian. Gunakan template CSV siswa terbaru.',
+                ]);
             }
 
-            $data = array_combine($header, array_slice(array_pad($row, count($header), null), 0, count($header)));
-
-            if (! $data || blank($data['username'] ?? null)) {
-                continue;
-            }
-
-            $examCodes = collect(preg_split('/[;,|\r\n]+/', (string) ($data['kode_ujian'] ?? $data['exam_code'] ?? ''), -1, PREG_SPLIT_NO_EMPTY))
-                ->map(fn ($code) => str($code)->upper()->trim()->toString())
-                ->filter()
-                ->unique();
-            $matchedExams = $examCodes->map(fn ($code) => $exams->get($code))->filter();
-
-            if ($matchedExams->isEmpty()) {
-                $skipped++;
-
-                continue;
-            }
-
-            $student = User::updateOrCreate(
-                ['username' => trim((string) $data['username'])],
-                [
-                    'name' => filled($data['name'] ?? $data['nama'] ?? null) ? trim((string) ($data['name'] ?? $data['nama'])) : trim((string) $data['username']),
-                    'nisn' => filled($data['nisn'] ?? $data['nis'] ?? null) ? trim((string) ($data['nisn'] ?? $data['nis'])) : null,
-                    'class' => filled($data['class'] ?? $data['kelas'] ?? null) ? trim((string) ($data['class'] ?? $data['kelas'])) : $matchedExams->first()->getAttribute('class'),
-                    'email' => filled($data['email'] ?? null) ? trim((string) $data['email']) : null,
-                    'password' => filled($data['password'] ?? null) ? trim((string) $data['password']) : 'password',
-                    'role' => 'siswa',
-                ]
-            );
-
-            $matchedExams->each(fn (Exam $exam) => $exam->participants()->syncWithoutDetaching([$student->id]));
-
-            $imported++;
-            $registered += $matchedExams->count();
+            break;
         }
 
-        ActivityLog::record('student_imported', "Admin import {$imported} siswa dari CSV dan mendaftarkan {$registered} peserta ujian.", request: $request);
+        if ($header === null) {
+            return back()->withErrors([
+                'file' => 'File CSV tidak memiliki data siswa.',
+            ]);
+        }
 
-        $message = "{$imported} siswa berhasil diimport dan {$registered} peserta berhasil didaftarkan ke ujian.";
+        DB::transaction(function () use ($rows, $header, $exams, &$imported, &$registered, &$skipped, &$deleted): void {
+            $deleted = User::query()->where('role', 'siswa')->delete();
+            $headerFound = false;
+
+            foreach ($rows as $row) {
+                if (! is_array($row) || count(array_filter($row, fn ($value) => filled($value))) === 0) {
+                    continue;
+                }
+
+                if (! $headerFound) {
+                    $headerFound = true;
+
+                    continue;
+                }
+
+                $data = array_combine($header, array_slice(array_pad($row, count($header), null), 0, count($header)));
+
+                if (! $data || blank($data['username'] ?? null)) {
+                    continue;
+                }
+
+                $examCodes = collect(preg_split('/[;,|\r\n]+/', (string) ($data['kode_ujian'] ?? $data['exam_code'] ?? ''), -1, PREG_SPLIT_NO_EMPTY))
+                    ->map(fn ($code) => str($code)->upper()->trim()->toString())
+                    ->filter()
+                    ->unique();
+                $matchedExams = $examCodes->map(fn ($code) => $exams->get($code))->filter();
+
+                if ($matchedExams->isEmpty()) {
+                    $skipped++;
+
+                    continue;
+                }
+
+                $student = User::updateOrCreate(
+                    ['username' => trim((string) $data['username'])],
+                    [
+                        'name' => filled($data['name'] ?? $data['nama'] ?? null) ? trim((string) ($data['name'] ?? $data['nama'])) : trim((string) $data['username']),
+                        'nisn' => filled($data['nisn'] ?? $data['nis'] ?? null) ? trim((string) ($data['nisn'] ?? $data['nis'])) : null,
+                        'class' => filled($data['class'] ?? $data['kelas'] ?? null) ? trim((string) ($data['class'] ?? $data['kelas'])) : $matchedExams->first()->getAttribute('class'),
+                        'email' => filled($data['email'] ?? null) ? trim((string) $data['email']) : null,
+                        'password' => filled($data['password'] ?? null) ? trim((string) $data['password']) : 'password',
+                        'role' => 'siswa',
+                    ]
+                );
+
+                $matchedExams->each(fn (Exam $exam) => $exam->participants()->syncWithoutDetaching([$student->id]));
+
+                $imported++;
+                $registered += $matchedExams->count();
+            }
+        });
+
+        ActivityLog::record('student_imported', "Admin menghapus {$deleted} siswa lama, lalu import {$imported} siswa dari CSV dan mendaftarkan {$registered} peserta ujian.", request: $request);
+
+        $message = "{$deleted} siswa lama dihapus permanen. {$imported} siswa berhasil diimport dan {$registered} peserta berhasil didaftarkan ke ujian.";
 
         if ($skipped > 0) {
             $message .= " {$skipped} baris dilewati karena kode ujian tidak ditemukan.";
