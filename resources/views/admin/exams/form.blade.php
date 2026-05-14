@@ -39,6 +39,10 @@
                 <input class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#0b2f57] focus:ring-4 focus:ring-sky-100" name="result_spreadsheet_id" value="{{ old('result_spreadsheet_id', $exam->result_spreadsheet_id) }}" placeholder="ID dari URL Google Sheets">
             </label>
             <label class="block">
+                <span class="text-sm font-semibold text-slate-700">Field Username Google Form</span>
+                <input class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#0b2f57] focus:ring-4 focus:ring-sky-100" name="prefill_username_field" value="{{ old('prefill_username_field', $exam->prefill_username_field) }}" placeholder="Contoh: entry.555555">
+            </label>
+            <label class="block">
                 <span class="text-sm font-semibold text-slate-700">Nama Sheet Hasil</span>
                 <input class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#0b2f57] focus:ring-4 focus:ring-sky-100" name="result_sheet_name" value="{{ old('result_sheet_name', $exam->result_sheet_name) }}" placeholder="Contoh: Form Responses 1">
             </label>

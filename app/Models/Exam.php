@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
     'result_spreadsheet_id',
     'result_sheet_name',
     'prefill_name_field',
+    'prefill_username_field',
     'prefill_nisn_field',
     'prefill_class_field',
     'prefill_exam_field',
@@ -105,6 +106,7 @@ class Exam extends Model
     {
         $params = array_filter([
             $this->prefill_name_field => $student->name,
+            $this->prefill_username_field => $student->username,
             $this->prefill_nisn_field => $student->nisn,
             $this->prefill_class_field => $student->getAttribute('class'),
             $this->prefill_exam_field => $this->title,

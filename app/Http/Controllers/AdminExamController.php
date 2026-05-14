@@ -78,6 +78,7 @@ class AdminExamController extends Controller
             'result_spreadsheet_id' => ['nullable', 'string', 'max:255'],
             'result_sheet_name' => ['nullable', 'string', 'max:255'],
             'prefill_name_field' => ['nullable', 'string', 'max:255'],
+            'prefill_username_field' => ['nullable', 'string', 'max:255'],
             'prefill_nisn_field' => ['nullable', 'string', 'max:255'],
             'prefill_class_field' => ['nullable', 'string', 'max:255'],
             'prefill_exam_field' => ['nullable', 'string', 'max:255'],
